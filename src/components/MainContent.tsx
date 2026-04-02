@@ -785,18 +785,31 @@ function AddGameModal({ onClose, onAdd }: { onClose: () => void; onAdd: (name: s
   )
 }
 
-function GamesTab() {
+const DEFAULT_GAMES = [
+  { name: 'Counter-Strike 2',  hours: '284', rank: 'B Rangsor', color: '#f55500', abbr: 'CS2' },
+  { name: 'Apex Legends',      hours: '142', rank: 'Platinum',  color: '#f59e0b', abbr: 'AX'  },
+  { name: 'Valorant',          hours: '98',  rank: 'Gold 2',    color: '#e83c3c', abbr: 'VL'  },
+  { name: 'World of Warcraft', hours: '421', rank: 'Mythic+',   color: '#d97706', abbr: 'WoW' },
+]
+
+function GamesTab({ steamId }: { steamId: string }) {
+  const storageKey = `playlogg_games_${steamId}`
   const [showModal, setShowModal] = useState(false)
-  const [games, setGames] = useState([
-    { name: 'Counter-Strike 2',  hours: '284', rank: 'B Rangsor', color: '#f55500', abbr: 'CS2' },
-    { name: 'Apex Legends',      hours: '142', rank: 'Platinum',  color: '#f59e0b', abbr: 'AX'  },
-    { name: 'Valorant',          hours: '98',  rank: 'Gold 2',    color: '#e83c3c', abbr: 'VL'  },
-    { name: 'World of Warcraft', hours: '421', rank: 'Mythic+',   color: '#d97706', abbr: 'WoW' },
-  ])
+  const [games, setGames] = useState(() => {
+    try {
+      const saved = localStorage.getItem(storageKey)
+      if (saved) return JSON.parse(saved) as typeof DEFAULT_GAMES
+    } catch { /* ignore */ }
+    return DEFAULT_GAMES
+  })
 
   function handleAdd(name: string, abbr: string, color: string) {
     if (!games.find(g => g.name === name)) {
-      setGames(prev => [...prev, { name, abbr, color, hours: '0', rank: '—' }])
+      setGames(prev => {
+        const next = [...prev, { name, abbr, color, hours: '0', rank: '—' }]
+        localStorage.setItem(storageKey, JSON.stringify(next))
+        return next
+      })
     }
   }
 
@@ -837,7 +850,7 @@ export function MainContent({ activeTab, steamId }: MainContentProps) {
       {activeTab === 'Stats'      && <StatsTab />}
       {activeTab === 'Hírek'      && <NewsTab />}
       {activeTab === 'Profil'     && <ProfileTab />}
-      {activeTab === 'Games'      && <GamesTab />}
+      {activeTab === 'Games'      && <GamesTab steamId={steamId} />}
     </main>
   )
 }
