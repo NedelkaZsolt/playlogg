@@ -1,5 +1,16 @@
+import { readFileSync } from 'fs'
+import { resolve }     from 'path'
 import express from 'express'
 import cors    from 'cors'
+
+// Load .env manually (no extra dependency needed)
+try {
+  const env = readFileSync(resolve(process.cwd(), '.env'), 'utf-8')
+  for (const line of env.split('\n')) {
+    const m = line.match(/^([^#=]+)=(.*)$/)
+    if (m) process.env[m[1].trim()] = m[2].trim()
+  }
+} catch { /* .env is optional */ }
 import usersRouter         from './routes/users.js'
 import friendsRouter       from './routes/friends.js'
 import postsRouter         from './routes/posts.js'
