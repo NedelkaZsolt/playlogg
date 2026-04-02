@@ -71,13 +71,19 @@ export function useSteamAuth() {
     if (!steamId) return
 
     setLoading(true)
-    fetchSteamProfile(steamId).then(({ personaName, avatarUrl }) => {
-      const u: SteamUser = {
-        steamId,
-        personaName,
-        avatarUrl,
-        avatarColor: colorFromId(steamId),
-      }
+    fetchSteamProfile(steamId).then(async ({ personaName, avatarUrl }) => {
+      const avatarColor = colorFromId(steamId)
+      const u: SteamUser = { steamId, personaName, avatarUrl, avatarColor }
+
+      // Persist to database
+      try {
+        await fetch('/api/users/upsert', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ steam_id: steamId, persona_name: personaName, avatar_url: avatarUrl, avatar_color: avatarColor }),
+        })
+      } catch { /* server might not be running */ }
+
       setUser(u)
       localStorage.setItem(STORAGE_KEY, JSON.stringify(u))
       setLoading(false)
