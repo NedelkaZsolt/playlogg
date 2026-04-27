@@ -19,6 +19,7 @@ import notificationsRouter from './routes/notifications.js'
 import groupsRouter        from './routes/groups.js'
 import activitiesRouter    from './routes/activities.js'
 import steamStatsRouter    from './routes/steamStats.js'
+import csgoNewsRouter      from './routes/csgoNews.js'
 
 const app  = express()
 const PORT = 3001
@@ -34,6 +35,7 @@ app.use('/api/notifications', notificationsRouter)
 app.use('/api/groups',        groupsRouter)
 app.use('/api/activities',    activitiesRouter)
 app.use('/api/steam-stats',  steamStatsRouter)
+app.use('/api/csgo-news',     csgoNewsRouter)
 
 app.get('/api/health', (_req, res) => res.json({ ok: true, time: new Date().toISOString() }))
 

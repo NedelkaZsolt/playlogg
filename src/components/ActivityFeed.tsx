@@ -10,10 +10,10 @@ interface ActivityItem {
 }
 
 const activities: ActivityItem[] = [
-  { id: 1, user: 'David',  initial: 'D', avatarColor: '#5533bb', action: 'csatlakozott',   game: 'Counter-Strike 2', gameColor: '#f55500', time: '2p' },
-  { id: 2, user: 'Adam',   initial: 'A', avatarColor: '#c84010', action: 'nyerte',          game: 'Counter-Strike 2', gameColor: '#f55500', time: '8p' },
+  { id: 1, user: 'David',  initial: 'D', avatarColor: '#5533bb', action: 'csatlakozott',   game: 'Counter-Strike 2', gameColor: '#3b82f6', time: '2p' },
+  { id: 2, user: 'Adam',   initial: 'A', avatarColor: '#c84010', action: 'nyerte',          game: 'Counter-Strike 2', gameColor: '#3b82f6', time: '8p' },
   { id: 3, user: 'Peter',  initial: 'P', avatarColor: '#1a7744', action: 'belépett',        game: 'Dhayan Vampyr',    gameColor: '#7755dd', time: '15p' },
-  { id: 4, user: 'Joni1',  initial: 'J', avatarColor: '#bb3300', action: 'új rangot ért el', game: 'Counter-Strike 2', gameColor: '#f55500', time: '24p' },
+  { id: 4, user: 'Joni1',  initial: 'J', avatarColor: '#bb3300', action: 'új rangot ért el', game: 'Counter-Strike 2', gameColor: '#3b82f6', time: '24p' },
   { id: 5, user: 'Ferenc', initial: 'F', avatarColor: '#1a44aa', action: 'kilépett',        game: 'Apex Legends',     gameColor: '#f59e0b', time: '1ó' },
 ]
 

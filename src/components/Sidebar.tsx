@@ -59,7 +59,7 @@ function AddFriendModal({ onClose }: { onClose: () => void }) {
           disabled={!value.trim() || sent}
           className="w-full py-2 rounded-md text-[13px] font-semibold transition-colors"
           style={{
-            background: sent ? '#1a1a26' : '#f55500',
+            background: sent ? '#1a1a26' : '#3b82f6',
             color: sent ? '#1ed760' : '#fff',
             opacity: !value.trim() ? 0.4 : 1,
             cursor: !value.trim() ? 'not-allowed' : 'pointer',
@@ -115,7 +115,7 @@ function FriendRow({ friend }: { friend: Friend }) {
         <p className="text-[13px] font-medium truncate leading-snug" style={{ color: '#c8c8dc' }}>
           {friend.name}
         </p>
-        <p className="text-[11px] truncate leading-snug" style={{ color: friend.statusColor === 'orange' ? '#f55500' : '#52526a' }}>
+        <p className="text-[11px] truncate leading-snug" style={{ color: friend.statusColor === 'orange' ? '#3b82f6' : '#52526a' }}>
           {friend.status}
         </p>
       </div>

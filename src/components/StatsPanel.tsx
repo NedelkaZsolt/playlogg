@@ -31,7 +31,7 @@ interface ApexStats {
 }
 
 const GAME_CONFIG: Record<Game, { appId: string; color: string; endpoint: string }> = {
-  CS2:  { appId: '730',     color: '#f55500', endpoint: 'cs2'  },
+  CS2:  { appId: '730',     color: '#3b82f6', endpoint: 'cs2'  },
   Apex: { appId: '1172470', color: '#cc3333', endpoint: 'apex' },
 }
 

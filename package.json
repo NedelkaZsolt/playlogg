@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.91.1",
     "better-sqlite3": "^12.8.0",
     "clsx": "^2.1.0",
     "cors": "^2.8.6",

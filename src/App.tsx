@@ -15,7 +15,7 @@ export default function App() {
   }
 
   return (
-    <div className="flex flex-col" style={{ height: '100vh', background: '#0c0c11', overflow: 'hidden' }}>
+    <div className="flex flex-col" style={{ height: '100vh', overflow: 'hidden' }}>
       <Header activeTab={activeTab} onTabChange={setActiveTab} user={user} onLogout={logout} />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />

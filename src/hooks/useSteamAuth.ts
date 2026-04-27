@@ -10,7 +10,7 @@ export interface SteamUser {
 const STORAGE_KEY = 'playlogg_steam_user'
 
 const AVATAR_COLORS = [
-  '#f55500', '#3b82f6', '#a855f7', '#1ed760',
+  '#3b82f6', '#3b82f6', '#a855f7', '#1ed760',
   '#e83c3c', '#f59e0b', '#06b6d4', '#ec4899',
 ]
 

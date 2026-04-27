@@ -11,9 +11,10 @@ interface HeaderProps {
 }
 
 const NAV_TABS: NavTab[] = ['Stats', 'Kezdőoldal', 'Hírek', 'Profil', 'Games']
+const ACCENT_COLOR = '#3b82f6'
 
 const NOTIFICATIONS = [
-  { id: 1, icon: Trophy,        color: '#f55500', text: 'Adam nyert egy meccset Counter-Strike 2-ben',       time: '2p',  read: false },
+  { id: 1, icon: Trophy,        color: ACCENT_COLOR, text: 'Adam nyert egy meccset Counter-Strike 2-ben',       time: '2p',  read: false },
   { id: 2, icon: User,          color: '#3b82f6', text: 'Peter barát kérést küldött neked',                  time: '15p', read: false },
   { id: 3, icon: MessageSquare, color: '#1ed760', text: 'David megjegyezte: "jó meccs volt"',                time: '1ó',  read: true  },
   { id: 4, icon: Trophy,        color: '#a855f7', text: 'Új rang: Silver II — Counter-Strike 2',             time: '3ó',  read: true  },
@@ -56,12 +57,10 @@ export function Header({ activeTab, onTabChange, user, onLogout }: HeaderProps) 
       style={{ height: '52px', background: '#111119', borderBottom: '1px solid #1e1e2c' }}
     >
       {/* Logo */}
-      <div className="flex items-center gap-2 select-none flex-shrink-0" style={{ minWidth: 140 }}>
-        <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-          <path d="M11 2C11 2 16 7.5 16 12.5C16 15.5 13.8 18 11 18C8.2 18 6 15.5 6 12.5C6 10.2 7.4 8.4 7.4 8.4C7.4 8.4 6.8 11.2 9.2 12.2C9.2 12.2 8.5 9.4 11 8C11 8 10.2 10.8 12.3 11.6C12.3 11.6 14 10 14 12.8C14 14.3 12.7 15.5 11 15.5C9.3 15.5 8 14.3 8 12.8C8 11.5 9 10.5 10 10.2" stroke="#f55500" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-        </svg>
-        <span className="text-[15px] font-bold tracking-tight">
-          <span style={{ color: '#e4e4ef' }}>Play</span><span style={{ color: '#f55500' }}>Logg</span>
+      <div className="flex items-center gap-0 select-none flex-shrink-0" style={{ minWidth: 140 }}>
+        <img src="/logo.png" alt="PlayLogg Logo" width="96" height="96" style={{ marginTop: '6px' }} />
+        <span className="text-[15px] font-bold tracking-tight" style={{ marginLeft: '-12px' }}>
+          <span style={{ color: '#e4e4ef' }}>Play</span><span style={{ color: ACCENT_COLOR }}>Logg</span>
         </span>
       </div>
 
@@ -89,7 +88,7 @@ export function Header({ activeTab, onTabChange, user, onLogout }: HeaderProps) 
               {isActive && (
                 <span
                   className="absolute bottom-0 left-4 right-4 rounded-t-full"
-                  style={{ height: '2px', background: '#f55500' }}
+                  style={{ height: '2px', background: ACCENT_COLOR }}
                 />
               )}
             </button>
@@ -149,7 +148,7 @@ export function Header({ activeTab, onTabChange, user, onLogout }: HeaderProps) 
           {unread > 0 && (
             <span
               className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full"
-              style={{ background: '#f55500' }}
+              style={{ background: ACCENT_COLOR }}
             />
           )}
         </button>
@@ -278,7 +277,7 @@ export function Header({ activeTab, onTabChange, user, onLogout }: HeaderProps) 
                       <span className="text-[10px]" style={{ color: '#3e3e56' }}>{n.time}</span>
                     </div>
                     {!n.read && (
-                      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 mt-1.5" style={{ background: '#f55500' }} />
+                      <span className="w-1.5 h-1.5 rounded-full flex-shrink-0 mt-1.5" style={{ background: ACCENT_COLOR }} />
                     )}
                   </div>
                 )
@@ -346,7 +345,7 @@ export function Header({ activeTab, onTabChange, user, onLogout }: HeaderProps) 
             <div style={{ borderTop: '1px solid #1e1e2c' }}>
               <button
                 className="w-full flex items-center gap-2.5 px-4 py-2.5 text-[13px] transition-colors"
-                style={{ color: '#e83c3c', background: 'transparent' }}
+                style={{ color: '#3cb2e8', background: 'transparent' }}
                 onMouseEnter={(e) => ((e.currentTarget as HTMLButtonElement).style.background = '#1a1a26')}
                 onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.background = 'transparent')}
                 onClick={() => { setOpenPanel(null); onLogout() }}

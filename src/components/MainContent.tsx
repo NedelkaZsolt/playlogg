@@ -1,15 +1,16 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import type { NavTab } from '../types'
 import { GameTabBar } from './GameTabBar'
 import { PostCard } from './PostCard'
 import { StatsPanel } from './StatsPanel'
 import { ActivityFeed } from './ActivityFeed'
 import { posts, gameTabs as initialGameTabs } from '../data/mockData'
+import { getCsgoNews } from '../lib/api'
 import type { GameTab } from '../types'
 import {
   BarChart2, Trophy, Target, Crosshair, Shield, Zap,
   Newspaper, Clock, ExternalLink, Edit3,
-  Plus, Star, TrendingUp, X
+  Plus, Star, TrendingUp, X, Square
 } from 'lucide-react'
 
 interface MainContentProps {
@@ -17,11 +18,81 @@ interface MainContentProps {
   steamId: string
 }
 
+type NewsItem = {
+  title: string
+  source: string
+  time: string
+  tag: string
+  tagColor: string
+  hot?: boolean
+  url: string
+  thumbnail?: string
+}
+
+const CS_GO_NEWS_FALLBACK: NewsItem[] = [
+  {
+    title: 'CS2 Major: wildcard csapatok és új selejtezők bejelentve',
+    source: 'HLTV',
+    time: '4ó',
+    tag: 'CS2',
+    tagColor: '#3b82f6',
+    hot: true,
+    url: 'https://www.hltv.org/news/',
+    thumbnail: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/HLTV-logo.svg/1200px-HLTV-logo.svg.png',
+  },
+  {
+    title: 'Valve blog: új fegyverbalance patch és operation roadmap',
+    source: 'Valve',
+    time: '1 napja',
+    tag: 'Patch',
+    tagColor: '#60a5fa',
+    hot: true,
+    url: 'https://blog.counter-strike.net/',
+    thumbnail: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Counter-Strike_Logo.svg/1280px-Counter-Strike_Logo.svg.png',
+  },
+  {
+    title: 'Esport: NAVI és G2 új taktikai stratégiát próbál az IEM-en',
+    source: 'HLTV',
+    time: '2 napja',
+    tag: 'Esport',
+    tagColor: '#8b5cf6',
+    url: 'https://www.hltv.org/news/',
+    thumbnail: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/HLTV-logo.svg/1200px-HLTV-logo.svg.png',
+  },
+  {
+    title: 'CS2 térképrotáció: mely pályák kerülnek be a versenyszezonba?',
+    source: 'HLTV',
+    time: '6ó',
+    tag: 'Map pool',
+    tagColor: '#22c55e',
+    url: 'https://www.hltv.org/news/',
+    thumbnail: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/HLTV-logo.svg/1200px-HLTV-logo.svg.png',
+  },
+  {
+    title: 'Pro ranglista: top 5 játékos, aki most a legforróbb',
+    source: 'HLTV',
+    time: '5 óra',
+    tag: 'Rank',
+    tagColor: '#f97316',
+    url: 'https://www.hltv.org/news/',
+    thumbnail: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/HLTV-logo.svg/1200px-HLTV-logo.svg.png',
+  },
+  {
+    title: 'Stratégiák: hogyan nyerj többet a CS2 Premier ligában',
+    source: 'Valve',
+    time: '8 óra',
+    tag: 'Guide',
+    tagColor: '#3b82f6',
+    url: 'https://blog.counter-strike.net/',
+    thumbnail: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Counter-Strike_Logo.svg/1280px-Counter-Strike_Logo.svg.png',
+  },
+]
+
 /* ─────────────────────────────────────────────
    ÚJ CSOPORT MODAL
 ───────────────────────────────────────────── */
 const GROUP_COLORS = [
-  { label: 'Narancs', color: '#f55500', bgFrom: '#cc4400', bgTo: '#7a2800' },
+  { label: 'Narancs', color: '#3b82f6', bgFrom: '#2266cc', bgTo: '#113388' },
   { label: 'Sárga',   color: '#f59e0b', bgFrom: '#cc8800', bgTo: '#7a5000' },
   { label: 'Piros',   color: '#e83c3c', bgFrom: '#cc2222', bgTo: '#7a1010' },
   { label: 'Kék',     color: '#3b82f6', bgFrom: '#2266cc', bgTo: '#113388' },
@@ -217,8 +288,10 @@ function HomeTab({ steamId }: { steamId: string }) {
             ))}
           </div>
           <div className="space-y-4">
-            <StatsPanel steamId={steamId} />
-            <ActivityFeed />
+            {/* Banner ablak */}
+            <div className="rounded-lg overflow-hidden" style={{ background: '#15151d', border: '1px solid #1e1e2c', minHeight: '400px' }}>
+              <img src="/banner.png" alt="Banner" className="w-full h-full object-cover" />
+            </div>
           </div>
         </div>
       </div>
@@ -271,7 +344,7 @@ function StatsTab() {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-4 gap-3">
-        <StatCard label="K/D arány"      value="1.84"  sub="Top 15%"      color="#f55500" icon={Crosshair} />
+        <StatCard label="K/D arány"      value="1.84"  sub="Top 15%"      color="#3b82f6" icon={Crosshair} />
         <StatCard label="Győzelmi arány" value="62%"   sub="124 meccs"    color="#1ed760" icon={Trophy} />
         <StatCard label="Headshot"        value="41%"   sub="Átlag felett" color="#f59e0b" icon={Target} />
         <StatCard label="Rating"          value="1.21"  sub="Premier"      color="#7755dd" icon={BarChart2} />
@@ -298,7 +371,7 @@ function StatsTab() {
 
         <div className="space-y-3">
           {[
-            { label: 'ADR',           value: '82.4',  color: '#f55500' },
+            { label: 'ADR',           value: '82.4',  color: '#3b82f6' },
             { label: 'KAST%',         value: '74%',   color: '#1ed760' },
             { label: 'Utility damage',value: '38.1',  color: '#f59e0b' },
             { label: 'Entry kill%',   value: '55%',   color: '#7755dd' },
@@ -319,8 +392,8 @@ function StatsTab() {
 /* ─────────────────────────────────────────────
    HÍREK
 ───────────────────────────────────────────── */
-function NewsCard({ title, source, time, tag, tagColor, hot }: {
-  title: string; source: string; time: string; tag: string; tagColor: string; hot?: boolean
+function NewsCard({ title, source, time, tag, tagColor, hot, thumbnail }: {
+  title: string; source: string; time: string; tag: string; tagColor: string; hot?: boolean; url?: string; thumbnail?: string
 }) {
   return (
     <div className="flex gap-4 px-4 py-3 rounded-lg cursor-pointer transition-colors"
@@ -334,9 +407,13 @@ function NewsCard({ title, source, time, tag, tagColor, hot }: {
       {/* Thumbnail placeholder */}
       <div className="flex-shrink-0 w-20 h-14 rounded-lg overflow-hidden"
         style={{ background: `${tagColor}18`, border: `1px solid ${tagColor}22` }}>
-        <div className="w-full h-full flex items-center justify-center">
-          <Newspaper size={20} style={{ color: `${tagColor}88` }} />
-        </div>
+        {thumbnail ? (
+          <img src={thumbnail} alt={source} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <Newspaper size={20} style={{ color: `${tagColor}88` }} />
+          </div>
+        )}
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-1">
@@ -365,22 +442,101 @@ function NewsCard({ title, source, time, tag, tagColor, hot }: {
 }
 
 function NewsTab() {
+  const [news, setNews] = useState<NewsItem[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      setLoading(true)
+      setError(null)
+
+      try {
+        const items = await getCsgoNews(6)
+        setNews(items)
+      } catch (err) {
+        setNews(CS_GO_NEWS_FALLBACK)
+        setError('API elérés nem működik, helyi hírek betöltve.')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchNews()
+  }, [])
+
   return (
     <div className="grid gap-4" style={{ gridTemplateColumns: '1fr 280px' }}>
       <div className="space-y-3">
-        {[
-          { title: 'CS2 frissítés: új Premier térképek és rangsor változások', source: 'HLTV', time: '1 órája', tag: 'CS2', tagColor: '#f55500', hot: true },
-          { title: 'Major selejtező: NaVi és Vitality továbbjutottak a döntőbe', source: 'HLTV', time: '3 órája', tag: 'Esport', tagColor: '#1ed760' },
-          { title: 'Apex Legends szezon 23 patch notes — Legend és fegyver változások', source: 'EA Play', time: '5 órája', tag: 'Apex', tagColor: '#f59e0b' },
-          { title: 'Valorant Champions Tour EMEA: Grand Final eredmények', source: 'Dot Esports', time: '8 órája', tag: 'Valorant', tagColor: '#e83c3c', hot: true },
-          { title: 'World of Warcraft The War Within 11.1 patch: új dungeon és raid', source: 'Wowhead', time: '12 órája', tag: 'WoW', tagColor: '#d97706' },
-          { title: 'Steam játékstatisztika: CS2 all-time csúcs online játékosszámmal', source: 'Steam', time: '1 napja', tag: 'Gaming', tagColor: '#3b82f6' },
-        ].map((n, i) => <NewsCard key={i} {...n} />)}
+        <div className="flex items-center justify-between">
+          <span className="text-[15px] font-semibold" style={{ color: '#e4e4ef' }}>CS2 hírek</span>
+          <button
+            onClick={() => {
+              setLoading(true)
+              setError(null)
+              getCsgoNews(6)
+                .then(setNews)
+                .catch((err) => setError((err as Error).message || 'Nem sikerült betölteni a híreket'))
+                .finally(() => setLoading(false))
+            }}
+            className="text-[11px] font-medium rounded-md px-2 py-1 transition-colors"
+            style={{ background: '#1a1a26', color: '#8a8aa0' }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = '#23232f'; e.currentTarget.style.color = '#e4e4ef' }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = '#1a1a26'; e.currentTarget.style.color = '#8a8aa0' }}
+          >
+            Frissítés
+          </button>
+        </div>
+
+        {loading && (
+          <div className="rounded-lg p-4" style={{ background: '#15151d', border: '1px solid #1e1e2c' }}>
+            <span className="text-[13px]" style={{ color: '#8a8aa0' }}>Hírek betöltése…</span>
+          </div>
+        )}
+
+        {error && (
+          <div className="rounded-lg p-4" style={{ background: '#15151d', border: '1px solid #f87171' }}>
+            <span className="text-[13px]" style={{ color: '#f87171' }}>{error}</span>
+          </div>
+        )}
+
+        {!loading && !error && news.length === 0 && (
+          <div className="rounded-lg p-4" style={{ background: '#15151d', border: '1px solid #1e1e2c' }}>
+            <span className="text-[13px]" style={{ color: '#8a8aa0' }}>Nincs elérhető CS2 hír.</span>
+          </div>
+        )}
+
+        {!loading && news.map((n, i) => (
+          <a key={i} href={n.url} target="_blank" rel="noreferrer">
+            <NewsCard {...n} />
+          </a>
+        ))}
       </div>
       <div className="space-y-3">
+        <div className="rounded-3xl p-4" style={{ background: 'linear-gradient(135deg, #071426, #102e68)', border: '1px solid #1a2749' }}>
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-[11px] font-semibold uppercase tracking-[0.2em]" style={{ color: '#8a8aa0' }}>Hirdetés</span>
+            <span className="text-[10px] uppercase font-semibold" style={{ color: '#7dd3fc' }}>Esport</span>
+          </div>
+          <p className="mt-4 text-[15px] font-bold leading-tight" style={{ color: '#f8fbff' }}>VlamAI Live Analytics</p>
+          <p className="mt-2 text-[12px] leading-snug" style={{ color: '#c7d2ff' }}>
+            Valós idejű csapat- és meccselemzés CS2 bajnokságokhoz. Gyorsabb döntések, jobb stratégiák.
+          </p>
+          <div className="mt-4 flex items-center gap-2">
+            <button
+              className="rounded-full px-3 py-2 text-[12px] font-semibold transition-colors"
+              style={{ background: '#3b82f6', color: '#fff' }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = '#2563eb')}
+              onMouseLeave={(e) => (e.currentTarget.style.background = '#3b82f6')}
+            >
+              Részletek
+            </button>
+            <span className="text-[11px]" style={{ color: '#8a8aa0' }}>Esport partner</span>
+          </div>
+        </div>
         <div className="rounded-lg p-4" style={{ background: '#15151d', border: '1px solid #1e1e2c' }}>
           <p className="text-[12px] font-semibold mb-3" style={{ color: '#52526a' }}>TRENDING TÉMÁK</p>
-          {['CS2 Major', 'Valorant Champions', 'Apex szezon 23', 'WoW TWW', 'FPS tippek'].map((t, i) => (
+          {['CS2 Major', 'CS2 frissítés', 'Steam rangok', 'Esport', 'Játékfrissítés'].map((t, i) => (
             <div key={t} className="flex items-center gap-2 py-1.5 cursor-pointer"
               onMouseEnter={e => (e.currentTarget.style.color = '#e4e4ef')}
               onMouseLeave={e => (e.currentTarget.style.color = '')}>
@@ -399,7 +555,7 @@ function NewsTab() {
    PROFIL
 ───────────────────────────────────────────── */
 const BANNER_COLORS = [
-  { label: 'Narancs', from: '#1a0a00', mid: '#2a1000', to: '#150818', glow: '#f55500' },
+  { label: 'Narancs', from: '#08132b', mid: '#0a1a42', to: '#050b19', glow: '#3b82f6' },
   { label: 'Lila',    from: '#0e0818', mid: '#1a1030', to: '#0a0812', glow: '#7755dd' },
   { label: 'Kék',     from: '#080e1a', mid: '#0a1828', to: '#060a14', glow: '#3b82f6' },
   { label: 'Zöld',    from: '#060e08', mid: '#0a1a0c', to: '#050c06', glow: '#1ed760' },
@@ -407,7 +563,7 @@ const BANNER_COLORS = [
 ]
 
 const AVATAR_COLORS = [
-  { from: '#f55500', to: '#7a2800' },
+  { from: '#3b82f6', to: '#1e4099' },
   { from: '#7755dd', to: '#3322aa' },
   { from: '#3b82f6', to: '#1e4099' },
   { from: '#1ed760', to: '#116633' },
@@ -426,7 +582,7 @@ function EditProfileModal({ profile, onClose, onSave }: {
     <div className="fixed inset-0 z-50 flex items-center justify-center"
       style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)' }}
       onClick={e => { if (e.target === e.currentTarget) onClose() }}>
-      <div className="w-[460px] rounded-2xl overflow-hidden"
+      <div className="w-[540px] rounded-2xl overflow-hidden"
         style={{ background: '#15151d', border: '1px solid #27273a', boxShadow: '0 16px 48px rgba(0,0,0,0.6)' }}>
 
         {/* Header */}
@@ -441,8 +597,8 @@ function EditProfileModal({ profile, onClose, onSave }: {
         <div className="p-5 space-y-4">
           {/* Banner preview + picker */}
           <div>
-            <label className="text-[11px] font-medium block mb-2" style={{ color: '#52526a' }}>BANNER SZÍN</label>
-            <div className="h-14 rounded-lg mb-2 overflow-hidden relative"
+            <label className="text-[11px] font-medium block mb-2" style={{ color: '#52526a' }}>PROFIL TÉMA / BANNER SZÍN</label>
+            <div className="h-16 rounded-lg mb-2 overflow-hidden relative"
               style={{ background: `linear-gradient(135deg, ${BANNER_COLORS[form.bannerIdx].from}, ${BANNER_COLORS[form.bannerIdx].mid}, ${BANNER_COLORS[form.bannerIdx].to})` }}>
               <div className="absolute inset-0" style={{ background: `radial-gradient(ellipse 70% 80% at 70% 40%, ${BANNER_COLORS[form.bannerIdx].glow}33 0%, transparent 60%)` }} />
             </div>
@@ -485,7 +641,7 @@ function EditProfileModal({ profile, onClose, onSave }: {
             <input type="text" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))}
               className="w-full px-3 py-2 rounded-lg text-[13px] outline-none"
               style={{ background: '#0f0f14', border: '1px solid #1e1e2c', color: '#e4e4ef' }}
-              onFocus={e => (e.target.style.borderColor = '#f5550066')}
+              onFocus={e => (e.target.style.borderColor = '#3b82f666')}
               onBlur={e => (e.target.style.borderColor = '#1e1e2c')} />
           </div>
 
@@ -508,7 +664,7 @@ function EditProfileModal({ profile, onClose, onSave }: {
               rows={2} placeholder="Írj valamit magadról..."
               className="w-full px-3 py-2 rounded-lg text-[13px] outline-none resize-none"
               style={{ background: '#0f0f14', border: '1px solid #1e1e2c', color: '#e4e4ef' }}
-              onFocus={e => (e.target.style.borderColor = '#f5550066')}
+              onFocus={e => (e.target.style.borderColor = '#3b82f666')}
               onBlur={e => (e.target.style.borderColor = '#1e1e2c')} />
           </div>
 
@@ -522,9 +678,9 @@ function EditProfileModal({ profile, onClose, onSave }: {
             </button>
             <button onClick={() => { onSave(form); onClose() }}
               className="flex-1 py-2 rounded-lg text-[13px] font-bold"
-              style={{ background: '#f55500', color: '#fff', boxShadow: '0 0 16px #f5550044' }}
-              onMouseEnter={e => (e.currentTarget.style.background = '#e05e00')}
-              onMouseLeave={e => (e.currentTarget.style.background = '#f55500')}>
+              style={{ background: '#3b82f6', color: '#fff', boxShadow: '0 0 16px #3b82f644' }}
+              onMouseEnter={e => (e.currentTarget.style.background = '#2563eb')}
+              onMouseLeave={e => (e.currentTarget.style.background = '#3b82f6')}>
               Mentés
             </button>
           </div>
@@ -560,25 +716,26 @@ function ProfileTab() {
       {/* Profile header */}
       <div className="rounded-lg overflow-hidden" style={{ background: '#15151d', border: '1px solid #1e1e2c' }}>
         {/* Banner */}
-        <div className="h-28 relative overflow-hidden"
+        <div className="h-10 relative overflow-hidden"
           style={{ background: `linear-gradient(135deg, ${banner.from}, ${banner.mid}, ${banner.to})` }}>
           <div className="absolute inset-0" style={{
             background: `radial-gradient(ellipse 70% 80% at 70% 40%, ${banner.glow}33 0%, transparent 60%)`
           }} />
           <button onClick={() => setEditing(true)}
-            className="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-medium transition-all"
+            className="absolute top-3 right-3 flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all"
             style={{ background: 'rgba(255,255,255,0.08)', color: '#8a8aa0', border: '1px solid rgba(255,255,255,0.1)' }}
             onMouseEnter={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.15)'; (e.currentTarget as HTMLButtonElement).style.color = '#e4e4ef' }}
             onMouseLeave={e => { (e.currentTarget as HTMLButtonElement).style.background = 'rgba(255,255,255,0.08)'; (e.currentTarget as HTMLButtonElement).style.color = '#8a8aa0' }}>
             <Edit3 size={11} /> Szerkesztés
+            <Square size={4} style={{ color: '#3b82f6', marginLeft: '4px' }} />
           </button>
         </div>
 
         {/* Avatar + info */}
         <div className="px-5 pb-4">
-          <div className="flex items-end gap-4 -mt-8 mb-3">
+          <div className="flex items-end gap-4 mt-4 mb-3">
             <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-black text-white flex-shrink-0"
-              style={{ background: `radial-gradient(circle at 38% 32%, ${avatar.from}, ${avatar.to})`, border: '3px solid #15151d', boxShadow: `0 0 0 2px ${avatar.from}55` }}>
+              style={{ backgroundImage: 'url(/profile.png)', backgroundSize: 'cover', backgroundPosition: 'center', border: '3px solid #15151d', boxShadow: `0 0 0 2px ${avatar.from}55` }}>
               {profile.name.charAt(0).toUpperCase()}
             </div>
             <div className="pb-1">
@@ -608,7 +765,7 @@ function ProfileTab() {
             { icon: Trophy,    label: 'First Win',    color: '#f59e0b', done: true },
             { icon: Crosshair, label: '100 Kill',     color: '#e83c3c', done: true },
             { icon: Shield,    label: 'Flawless',     color: '#1ed760', done: true },
-            { icon: Zap,       label: 'Ace',          color: '#f55500', done: true },
+            { icon: Zap,       label: 'Ace',          color: '#3b82f6', done: true },
             { icon: Star,      label: 'Rank B',       color: '#7755dd', done: false },
             { icon: TrendingUp,label: 'Win Streak 5', color: '#3b82f6', done: false },
           ].map((a, i) => (
@@ -687,7 +844,7 @@ function GameCard({ name, hours, rank, color, abbr }: {
 }
 
 const AVAILABLE_GAMES = [
-  { name: 'Counter-Strike 2', abbr: 'CS2', color: '#f55500' },
+  { name: 'Counter-Strike 2', abbr: 'CS2', color: '#3b82f6' },
   { name: 'Apex Legends',     abbr: 'AX',  color: '#f59e0b' },
   { name: 'Valorant',         abbr: 'VL',  color: '#e83c3c' },
   { name: 'World of Warcraft',abbr: 'WoW', color: '#d97706' },
@@ -821,7 +978,7 @@ function AddGameModal({ onClose, onAdd }: { onClose: () => void; onAdd: (name: s
 }
 
 const DEFAULT_GAMES = [
-  { name: 'Counter-Strike 2',  hours: '284', rank: 'B Rangsor', color: '#f55500', abbr: 'CS2' },
+  { name: 'Counter-Strike 2',  hours: '284', rank: 'B Rangsor', color: '#3b82f6', abbr: 'CS2' },
   { name: 'Apex Legends',      hours: '142', rank: 'Platinum',  color: '#f59e0b', abbr: 'AX'  },
   { name: 'Valorant',          hours: '98',  rank: 'Gold 2',    color: '#e83c3c', abbr: 'VL'  },
   { name: 'World of Warcraft', hours: '421', rank: 'Mythic+',   color: '#d97706', abbr: 'WoW' },

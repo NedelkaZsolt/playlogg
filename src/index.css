@@ -14,9 +14,16 @@ html, body, #root {
   overflow: hidden;
 }
 
+html {
+  background-image: url('/hatter.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100%;
+}
+
 body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background-color: #0c0c11;
   color: #e4e4ef;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

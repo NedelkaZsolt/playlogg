@@ -41,7 +41,7 @@ export function LoginPage({ onLogin, loading }: LoginPageProps) {
           transform: 'translateX(-50%)',
           width: '700px',
           height: '500px',
-          background: 'radial-gradient(ellipse at center, #f5550012 0%, transparent 65%)',
+          background: 'radial-gradient(ellipse at center, #3b82f608 0%, transparent 65%)',
           filter: 'blur(40px)',
         }}
       />
@@ -74,7 +74,7 @@ export function LoginPage({ onLogin, loading }: LoginPageProps) {
           <svg width="28" height="28" viewBox="0 0 22 22" fill="none">
             <path
               d="M11 2C11 2 16 7.5 16 12.5C16 15.5 13.8 18 11 18C8.2 18 6 15.5 6 12.5C6 10.2 7.4 8.4 7.4 8.4C7.4 8.4 6.8 11.2 9.2 12.2C9.2 12.2 8.5 9.4 11 8C11 8 10.2 10.8 12.3 11.6C12.3 11.6 14 10 14 12.8C14 14.3 12.7 15.5 11 15.5C9.3 15.5 8 14.3 8 12.8C8 11.5 9 10.5 10 10.2"
-              stroke="#f55500"
+              stroke="#3b82f6"
               strokeWidth="1.5"
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -82,7 +82,7 @@ export function LoginPage({ onLogin, loading }: LoginPageProps) {
           </svg>
           <span className="text-[20px] font-bold tracking-tight">
             <span style={{ color: '#e4e4ef' }}>Play</span>
-            <span style={{ color: '#f55500' }}>Logg</span>
+            <span style={{ color: '#3b82f6' }}>Logg</span>
           </span>
         </div>
 

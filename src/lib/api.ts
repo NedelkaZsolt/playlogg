@@ -57,6 +57,8 @@ export const getNotifications = (steamId: string) => get(`/notifications/${steam
 export const markNotifRead    = (id: number)       => patch(`/notifications/${id}/read`)
 export const markAllRead      = (steamId: string)  => patch(`/notifications/${steamId}/read-all`)
 
+export const getCsgoNews = (count = 6) => get<{ title: string; source: string; time: string; tag: string; tagColor: string; hot?: boolean; url: string }[]>(`/csgo-news?count=${count}`)
+
 /* ── Groups ── */
 export const getGroups   = (steamId: string) => get(`/groups/${steamId}`)
 export const createGroup = (data: {
