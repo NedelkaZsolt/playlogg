@@ -3,7 +3,9 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const DB_PATH   = path.join(__dirname, '..', 'playlogg.db')
+const isVercel = Boolean(process.env.VERCEL)
+const DB_PATH = process.env.DB_PATH
+  ?? (isVercel ? path.join('/tmp', 'playlogg.db') : path.join(__dirname, '..', 'playlogg.db'))
 
 const db = new Database(DB_PATH)
 db.pragma('journal_mode = WAL')
