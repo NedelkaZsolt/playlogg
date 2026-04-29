@@ -1,27 +1,10 @@
 interface LoginPageProps {
   onLogin: () => void
+  onDemoLogin: () => void
   loading?: boolean
 }
 
-// Steam SVG logo (official brand asset shape)
-function SteamLogo() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 233 233" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path
-        d="M116.5 0C52.1 0 0 52.1 0 116.5c0 55.4 38.6 101.8 90.6 113.5l33.5-82.6c-1.3.1-2.6.1-3.9.1-24.8 0-44.9-20.1-44.9-44.9s20.1-44.9 44.9-44.9 44.9 20.1 44.9 44.9c0 21.6-15.3 39.7-35.7 44l-32.8 80.9c3.8.6 7.7.9 11.7.9 64.4 0 116.5-52.1 116.5-116.5S180.9 0 116.5 0z"
-        fill="white"
-        opacity="0.9"
-      />
-      <path
-        d="M116.2 80.6c-19.8 0-35.8 16-35.8 35.8s16 35.8 35.8 35.8 35.8-16 35.8-35.8-16.1-35.8-35.8-35.8z"
-        fill="white"
-        opacity="0.5"
-      />
-    </svg>
-  )
-}
-
-export function LoginPage({ onLogin, loading }: LoginPageProps) {
+export function LoginPage({ onLogin, onDemoLogin, loading }: LoginPageProps) {
   return (
     <div
       className="flex flex-col items-center justify-center"
@@ -70,28 +53,16 @@ export function LoginPage({ onLogin, loading }: LoginPageProps) {
         }}
       >
         {/* Logo */}
-        <div className="flex items-center gap-2.5 mb-6 select-none">
-          <svg width="28" height="28" viewBox="0 0 22 22" fill="none">
-            <path
-              d="M11 2C11 2 16 7.5 16 12.5C16 15.5 13.8 18 11 18C8.2 18 6 15.5 6 12.5C6 10.2 7.4 8.4 7.4 8.4C7.4 8.4 6.8 11.2 9.2 12.2C9.2 12.2 8.5 9.4 11 8C11 8 10.2 10.8 12.3 11.6C12.3 11.6 14 10 14 12.8C14 14.3 12.7 15.5 11 15.5C9.3 15.5 8 14.3 8 12.8C8 11.5 9 10.5 10 10.2"
-              stroke="#3b82f6"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <span className="text-[20px] font-bold tracking-tight">
-            <span style={{ color: '#e4e4ef' }}>Play</span>
-            <span style={{ color: '#3b82f6' }}>Logg</span>
-          </span>
+        <div className="mb-6 select-none">
+          <img src="/logo.png" alt="PlayLogg" className="mx-auto" style={{ width: '160px', height: 'auto' }} />
         </div>
 
         {/* Heading */}
         <h1 className="text-[18px] font-bold mb-2" style={{ color: '#e4e4ef' }}>
-          Üdvözlünk!
+          Welcome!
         </h1>
         <p className="text-[13px] mb-8 leading-relaxed" style={{ color: '#52526a' }}>
-          Jelentkezz be Steam fiókoddal hogy<br />nyomon követhesd játékaid és barátaid.
+          Log in with your Steam account to track your games and friends.
         </p>
 
         {/* Divider */}
@@ -106,42 +77,60 @@ export function LoginPage({ onLogin, loading }: LoginPageProps) {
                 strokeDasharray="32" strokeDashoffset="12" />
             </svg>
             <span className="text-[14px] font-semibold" style={{ color: '#66c0f4' }}>
-              Profil betöltése...
+              Loading profile...
             </span>
           </div>
         ) : (
-          <button
-            onClick={onLogin}
-            className="w-full flex items-center justify-center gap-3 py-3 rounded-lg text-[14px] font-semibold transition-all duration-150"
-            style={{ background: '#1b2838', color: '#fff', border: '1px solid #2a3f5a' }}
-            onMouseEnter={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.background = '#213347'
-              ;(e.currentTarget as HTMLButtonElement).style.borderColor = '#3d6080'
-            }}
-            onMouseLeave={(e) => {
-              (e.currentTarget as HTMLButtonElement).style.background = '#1b2838'
-              ;(e.currentTarget as HTMLButtonElement).style.borderColor = '#2a3f5a'
-            }}
-          >
-            <SteamLogo />
-            Bejelentkezés Steammel
-          </button>
+          <>
+            <button
+              onClick={onLogin}
+              className="w-full flex items-center justify-center gap-3 py-3 rounded-lg text-[14px] font-semibold transition-all duration-150"
+              style={{ background: '#1b2838', color: '#fff', border: '1px solid #2a3f5a' }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background = '#213347'
+                ;(e.currentTarget as HTMLButtonElement).style.borderColor = '#3d6080'
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background = '#1b2838'
+                ;(e.currentTarget as HTMLButtonElement).style.borderColor = '#2a3f5a'
+              }}
+            >
+              <img src="/steam.png" alt="Steam" width="20" height="20" />
+              Sign in with Steam
+            </button>
+            <button
+              onClick={onDemoLogin}
+              className="w-full flex items-center justify-center gap-3 py-3 rounded-lg text-[14px] font-semibold transition-all duration-150 mt-3"
+              style={{ background: '#14151c', color: '#a5b4fc', border: '1px solid #2a2d40' }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background = '#1b1d28'
+                ;(e.currentTarget as HTMLButtonElement).style.borderColor = '#3f4a77'
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLButtonElement).style.background = '#14151c'
+                ;(e.currentTarget as HTMLButtonElement).style.borderColor = '#2a2d40'
+              }}
+            >
+              <span style={{ width: '20px', display: 'inline-block' }}>👾</span>
+              Use demo account
+            </button>
+          </>
         )}
 
         {/* Fine print */}
         <p className="text-[11px] mt-5 leading-relaxed" style={{ color: '#3e3e56' }}>
-          A bejelentkezéssel elfogadod az{' '}
+          By signing in you agree to the{' '}
           <span style={{ color: '#52526a', cursor: 'pointer', textDecoration: 'underline' }}>
-            adatvédelmi szabályzatot
+            privacy policy
           </span>
           .<br />
-          Semmilyen adatodat nem tároljuk Steam szerveren kívül.
+          We do not store any of your data outside of Steam.
         </p>
       </div>
 
       {/* Bottom label */}
       <p className="text-[11px] mt-6" style={{ color: '#27273a' }}>
-        PlayLogg — nem kapcsolódik a Valve Corporation-höz
+        PlayLogg — not affiliated with Valve Corporation
       </p>
     </div>
   )

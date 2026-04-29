@@ -44,15 +44,16 @@ export function PostCard({ post }: PostCardProps) {
   const DURATION = 7200
 
   const hasKick = !!post.kickChannel
+  const hasStream = !!post.kickChannel || !!post.twitchChannel
 
   useEffect(() => {
-    if (!hasKick && isPlaying) {
+    if (!hasStream && isPlaying) {
       intervalRef.current = setInterval(() => setElapsed((p) => Math.min(p + 1, DURATION)), 1000)
     } else {
       if (intervalRef.current) clearInterval(intervalRef.current)
     }
     return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
-  }, [isPlaying, hasKick])
+  }, [isPlaying, hasStream])
 
   const togglePlay = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -75,12 +76,18 @@ export function PostCard({ post }: PostCardProps) {
     ? `https://player.kick.com/${post.kickChannel}?autoplay=true&muted=${isMuted ? 1 : 0}`
     : null
 
+  /* ── Twitch embed URL ── */
+  const twitchEmbedSrc = post.twitchChannel
+    ? `https://player.twitch.tv/?channel=${post.twitchChannel}&parent=${window.location.hostname}`
+    : null
+
   return (
     <div
       className="w-full rounded-lg overflow-hidden"
       style={{
         background: '#15151d',
         border: '1px solid #1e1e2c',
+        boxShadow: '0 0 32px rgba(59,130,246,0.4)',
         transition: 'border-color 0.15s',
       }}
       onMouseEnter={(e) => {
@@ -95,20 +102,32 @@ export function PostCard({ post }: PostCardProps) {
       {/* Video / Thumbnail area */}
       <div
         className="relative overflow-hidden"
-        style={{ paddingBottom: hasKick && isPlaying ? '56.25%' : '52%' }}
-        onClick={!hasKick ? togglePlay : undefined}
+        style={{ paddingBottom: hasStream && isPlaying ? '56.25%' : '52%' }}
+        onClick={!hasStream ? togglePlay : undefined}
       >
         <div className="absolute inset-0">
 
-          {/* ── Kick live embed (when playing) ── */}
-          {hasKick && isPlaying ? (
-            <iframe
-              src={kickEmbedSrc!}
-              allow="autoplay; fullscreen"
-              allowFullScreen
-              className="absolute inset-0 w-full h-full"
-              style={{ border: 'none' }}
-            />
+          {/* ── Live embed: Kick or Twitch (when playing) ── */}
+          {hasStream && isPlaying ? (
+            <>
+              {post.kickChannel && (
+                <iframe
+                  src={kickEmbedSrc!}
+                  allow="autoplay; fullscreen"
+                  allowFullScreen
+                  className="absolute inset-0 w-full h-full"
+                  style={{ border: 'none' }}
+                />
+              )}
+              {post.twitchChannel && (
+                <iframe
+                  src={twitchEmbedSrc!}
+                  allowFullScreen
+                  className="absolute inset-0 w-full h-full"
+                  style={{ border: 'none' }}
+                />
+              )}
+            </>
           ) : (
             /* ── CSS thumbnail (paused / no Kick) ── */
             <>
@@ -137,7 +156,7 @@ export function PostCard({ post }: PostCardProps) {
                   <div className="flex items-center gap-1.5 px-2 py-0.5 rounded"
                     style={{ background: '#e83c3c', color: '#fff' }}>
                     <span className="w-1.5 h-1.5 rounded-full bg-white" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">Élő</span>
+                    <span className="text-[10px] font-bold uppercase tracking-wider">Live</span>
                   </div>
                 ) : <div />}
                 <div
@@ -161,7 +180,7 @@ export function PostCard({ post }: PostCardProps) {
               )}
 
               {/* Progress bar (simulated) */}
-              {!hasKick && isPlaying && (
+              {!hasStream && isPlaying && (
                 <div className="absolute bottom-0 left-0 right-0 h-0.5" style={{ background: 'rgba(255,255,255,0.1)' }}>
                   <div
                     className="h-full"
@@ -183,6 +202,20 @@ export function PostCard({ post }: PostCardProps) {
           <p className="text-[12px] mt-0.5 leading-snug" style={{ color: '#52526a' }}>
             {post.description}
           </p>
+          {post.screenshot && (
+            <div className="mt-3 rounded-xl overflow-hidden border border-[#1e1e2c]">
+              <img
+                src={post.screenshot}
+                alt={`${post.title} screenshot`}
+                className="w-full h-40 object-cover"
+              />
+            </div>
+          )}
+          {post.feedback && (
+            <p className="text-[12px] mt-2 italic" style={{ color: '#8a8aa0' }}>
+              {post.feedback}
+            </p>
+          )}
           <div className="flex items-center gap-1.5 mt-1.5">
             <span className="text-[11px]" style={{ color: '#3e3e56' }}>{post.timestamp}</span>
             <span style={{ color: '#27273a' }}>·</span>
@@ -196,7 +229,7 @@ export function PostCard({ post }: PostCardProps) {
             className="flex items-center gap-1 flex-shrink-0 mt-0.5"
             onClick={(e) => e.stopPropagation()}
           >
-            {!hasKick && (
+            {!hasStream && (
               <span className="text-[10px] tabular-nums mr-1" style={{ color: '#52526a' }}>
                 {formatTime(elapsed)}
               </span>
@@ -219,7 +252,7 @@ export function PostCard({ post }: PostCardProps) {
             >
               <Pause size={13} />
             </button>
-            {hasKick && (
+            {post.kickChannel && (
               <a
                 href={`https://kick.com/${post.kickChannel}`}
                 target="_blank"
@@ -228,11 +261,26 @@ export function PostCard({ post }: PostCardProps) {
                 style={{ color: '#52526a' }}
                 onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#8a8aa0')}
                 onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#52526a')}
+                title="Open on Kick"
               >
-                <ExternalLink size={12} />
+                <ExternalLink size={13} />
               </a>
             )}
-            {!hasKick && (
+            {post.twitchChannel && (
+              <a
+                href={`https://twitch.tv/${post.twitchChannel}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-6 h-6 flex items-center justify-center rounded transition-colors"
+                style={{ color: '#52526a' }}
+                onMouseEnter={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#8a8aa0')}
+                onMouseLeave={(e) => ((e.currentTarget as HTMLAnchorElement).style.color = '#52526a')}
+                title="Open on Twitch"
+              >
+                <ExternalLink size={13} />
+              </a>
+            )}
+            {!hasStream && (
               <button
                 className="w-6 h-6 flex items-center justify-center rounded transition-colors"
                 style={{ color: '#52526a' }}

@@ -1,4 +1,4 @@
-export type NavTab = 'Stats' | 'Kezdőoldal' | 'Hírek' | 'Profil' | 'Games'
+export type NavTab = 'Stats' | 'Home' | 'News' | 'Explore' | 'Profile' | 'Games'
 
 export interface Friend {
   id: number
@@ -8,6 +8,7 @@ export interface Friend {
   avatarGradient: [string, string]
   ringColor: string
   initial: string
+  avatar?: string
   rightIcon?: 'check' | 'square' | 'minus' | 'pause'
   isOnline?: boolean
 }
@@ -31,4 +32,5 @@ export interface Post {
   stat?: string
   timestamp: string
   kickChannel?: string
+  twitchChannel?: string
 }

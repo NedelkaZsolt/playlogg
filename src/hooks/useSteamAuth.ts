@@ -8,6 +8,7 @@ export interface SteamUser {
 }
 
 const STORAGE_KEY = 'playlogg_steam_user'
+const DEMO_STEAM_ID = 'demo-local'
 
 const AVATAR_COLORS = [
   '#3b82f6', '#3b82f6', '#a855f7', '#1ed760',
@@ -18,6 +19,15 @@ function colorFromId(id: string): string {
   let hash = 0
   for (let i = 0; i < id.length; i++) hash = id.charCodeAt(i) + ((hash << 5) - hash)
   return AVATAR_COLORS[Math.abs(hash) % AVATAR_COLORS.length]
+}
+
+function getDemoUser(): SteamUser {
+  return {
+    steamId: DEMO_STEAM_ID,
+    personaName: 'Demo Gamer',
+    avatarUrl: '',
+    avatarColor: '#3b82f6',
+  }
 }
 
 async function fetchSteamProfile(steamId: string): Promise<{ personaName: string; avatarUrl: string }> {
@@ -108,5 +118,11 @@ export function useSteamAuth() {
     setUser(null)
   }
 
-  return { user, login, logout, loading }
+  const demoLogin = () => {
+    const u = getDemoUser()
+    setUser(u)
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(u))
+  }
+
+  return { user, login, logout, loading, demoLogin }
 }

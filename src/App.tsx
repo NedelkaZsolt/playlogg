@@ -7,11 +7,11 @@ import { LoginPage } from './components/LoginPage'
 import { useSteamAuth } from './hooks/useSteamAuth'
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState<NavTab>('Kezdőoldal')
-  const { user, login, logout, loading } = useSteamAuth()
+  const [activeTab, setActiveTab] = useState<NavTab>('Home')
+  const { user, login, logout, loading, demoLogin } = useSteamAuth()
 
   if (!user) {
-    return <LoginPage onLogin={login} loading={loading} />
+    return <LoginPage onLogin={login} onDemoLogin={demoLogin} loading={loading} />
   }
 
   return (

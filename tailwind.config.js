@@ -14,9 +14,9 @@ export default {
           cardHover:   '#19191f',
           border:      '#1e1e2a',
           borderLight: '#282835',
-          orange:      '#ff6b00',
-          orangeDim:   '#cc5500',
-          orangeGlow:  'rgba(255,107,0,0.18)',
+          orange:      '#3b82f6',
+          orangeDim:   '#1e40af',
+          orangeGlow:  'rgba(59,130,246,0.18)',
           text:        '#eaeaf2',
           muted:       '#56566e',
           muted2:      '#8888a8',
@@ -29,8 +29,9 @@ export default {
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
       },
       boxShadow: {
-        'glow-orange': '0 0 24px rgba(255,107,0,0.3)',
+        'glow-orange': '0 0 24px rgba(59,130,246,0.3)',
         'glow-green':  '0 0 12px rgba(34,197,94,0.4)',
+        'glow-blue':   '0 0 32px rgba(59,130,246,0.5)',
         'card':        '0 4px 24px rgba(0,0,0,0.5)',
       },
       keyframes: {

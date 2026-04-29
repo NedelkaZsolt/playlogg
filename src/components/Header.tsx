@@ -10,14 +10,14 @@ interface HeaderProps {
   onLogout: () => void
 }
 
-const NAV_TABS: NavTab[] = ['Stats', 'Kezdőoldal', 'Hírek', 'Profil', 'Games']
+const NAV_TABS: NavTab[] = ['Stats', 'Home', 'News', 'Explore', 'Profile', 'Games']
 const ACCENT_COLOR = '#3b82f6'
 
 const NOTIFICATIONS = [
-  { id: 1, icon: Trophy,        color: ACCENT_COLOR, text: 'Adam nyert egy meccset Counter-Strike 2-ben',       time: '2p',  read: false },
-  { id: 2, icon: User,          color: '#3b82f6', text: 'Peter barát kérést küldött neked',                  time: '15p', read: false },
-  { id: 3, icon: MessageSquare, color: '#1ed760', text: 'David megjegyezte: "jó meccs volt"',                time: '1ó',  read: true  },
-  { id: 4, icon: Trophy,        color: '#a855f7', text: 'Új rang: Silver II — Counter-Strike 2',             time: '3ó',  read: true  },
+  { id: 1, icon: Trophy,        color: ACCENT_COLOR, text: 'Adam won a match in Counter-Strike 2',              time: '2m',  read: false },
+  { id: 2, icon: User,          color: '#3b82f6', text: 'Peter sent you a friend request',                   time: '15m', read: false },
+  { id: 3, icon: MessageSquare, color: '#1ed760', text: 'David commented: "great game"',                    time: '1h',  read: true  },
+  { id: 4, icon: Trophy,        color: '#a855f7', text: 'New rank: Silver II — Counter-Strike 2',           time: '3h',  read: true  },
 ]
 
 const SEARCH_SUGGESTIONS = ['Counter-Strike 2', 'Apex Legends', 'Dhayan Vampyr', 'Adam', 'David', 'Joni1']
@@ -56,12 +56,9 @@ export function Header({ activeTab, onTabChange, user, onLogout }: HeaderProps) 
       className="flex items-center justify-between px-6 flex-shrink-0 z-20 gap-8 relative"
       style={{ height: '52px', background: '#111119', borderBottom: '1px solid #1e1e2c' }}
     >
-      {/* Logo */}
-      <div className="flex items-center gap-0 select-none flex-shrink-0" style={{ minWidth: 140 }}>
-        <img src="/logo.png" alt="PlayLogg Logo" width="96" height="96" style={{ marginTop: '6px' }} />
-        <span className="text-[15px] font-bold tracking-tight" style={{ marginLeft: '-12px' }}>
-          <span style={{ color: '#e4e4ef' }}>Play</span><span style={{ color: ACCENT_COLOR }}>Logg</span>
-        </span>
+          {/* Logo */}
+      <div className="flex items-center gap-2 select-none flex-shrink-0" style={{ minWidth: 140 }}>
+        <img src="/logo.png" alt="PlayLogg Logo" width="150" height="48" style={{ objectFit: 'contain' }} />
       </div>
 
       {/* Nav */}
@@ -191,7 +188,7 @@ export function Header({ activeTab, onTabChange, user, onLogout }: HeaderProps) 
               <input
                 autoFocus
                 type="text"
-                placeholder="Keresés..."
+                placeholder="Search..."
                 value={searchVal}
                 onChange={(e) => setSearchVal(e.target.value)}
                 className="flex-1 bg-transparent text-[13px] outline-none placeholder:text-[#3e3e56]"
@@ -205,7 +202,7 @@ export function Header({ activeTab, onTabChange, user, onLogout }: HeaderProps) 
             </div>
             <div className="py-1">
               {filtered.length === 0 ? (
-                <p className="px-3 py-3 text-[12px]" style={{ color: '#3e3e56' }}>Nincs találat</p>
+                <p className="px-3 py-3 text-[12px]" style={{ color: '#3e3e56' }}>No results</p>
               ) : filtered.map((s) => (
                 <div
                   key={s}
@@ -236,7 +233,7 @@ export function Header({ activeTab, onTabChange, user, onLogout }: HeaderProps) 
             }}
           >
             <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid #1e1e2c' }}>
-              <span className="text-[13px] font-semibold" style={{ color: '#c8c8dc' }}>Értesítések</span>
+              <span className="text-[13px] font-semibold" style={{ color: '#c8c8dc' }}>Notifications</span>
               {unread > 0 && (
                 <button
                   className="text-[11px] font-medium transition-colors"
@@ -245,7 +242,7 @@ export function Header({ activeTab, onTabChange, user, onLogout }: HeaderProps) 
                   onMouseLeave={(e) => ((e.currentTarget as HTMLButtonElement).style.color = '#52526a')}
                   onClick={markAllRead}
                 >
-                  Mind olvasottnak jelöl
+                  Mark all read
                 </button>
               )}
             </div>
@@ -320,8 +317,8 @@ export function Header({ activeTab, onTabChange, user, onLogout }: HeaderProps) 
 
             {/* Menu items */}
             {[
-              { icon: User,     label: 'Profilom',      action: () => { onTabChange('Profil'); setOpenPanel(null) } },
-              { icon: Settings, label: 'Beállítások',   action: () => setOpenPanel(null) },
+              { icon: User,     label: 'My profile',    action: () => { onTabChange('Profile'); setOpenPanel(null) } },
+              { icon: Settings, label: 'Settings',      action: () => setOpenPanel(null) },
             ].map(({ icon: Icon, label, action }) => (
               <button
                 key={label}
@@ -351,7 +348,7 @@ export function Header({ activeTab, onTabChange, user, onLogout }: HeaderProps) 
                 onClick={() => { setOpenPanel(null); onLogout() }}
               >
                 <LogOut size={14} strokeWidth={1.8} />
-                Kijelentkezés
+                Logout
               </button>
             </div>
           </div>
