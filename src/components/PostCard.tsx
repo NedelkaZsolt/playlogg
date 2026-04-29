@@ -43,7 +43,6 @@ export function PostCard({ post }: PostCardProps) {
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const DURATION = 7200
 
-  const hasKick = !!post.kickChannel
   const hasStream = !!post.kickChannel || !!post.twitchChannel
 
   useEffect(() => {

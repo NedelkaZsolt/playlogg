@@ -33,4 +33,6 @@ export interface Post {
   timestamp: string
   kickChannel?: string
   twitchChannel?: string
+  screenshot?: string
+  feedback?: string
 }

@@ -3,7 +3,7 @@ import type { NavTab } from '../types'
 import { GameTabBar } from './GameTabBar'
 import { PostCard } from './PostCard'
 import { ActivityFeed } from './ActivityFeed'
-import { posts, gameTabs as initialGameTabs, friends } from '../data/mockData'
+import { posts, gameTabs as initialGameTabs } from '../data/mockData'
 import { getCsgoNews } from '../lib/api'
 import type { GameTab } from '../types'
 import {
@@ -476,10 +476,6 @@ function NewsCard({ title, source, time, tag, tagColor, hot, thumbnail }: {
 function NewsTab() {
   const [news, setNews] = useState<NewsItem[]>([])
   const [loading, setLoading] = useState(true)
-
-  const updateThumbnail = (index: number, thumbnail: string) => {
-    setNews((prev) => prev.map((item, i) => i === index ? { ...item, thumbnail } : item))
-  }
 
   useEffect(() => {
     const fetchNews = async () => {
