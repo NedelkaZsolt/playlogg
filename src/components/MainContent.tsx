@@ -307,7 +307,8 @@ function HomeTab({ steamId: _steamId }: { steamId: string }) {
         <div className="grid gap-4" style={{ gridTemplateColumns: '1fr 1fr 300px' }}>
           <div className="col-span-2 space-y-4">
             {posts
-              .filter(post => post.id === 1 || post.id === 3)
+              .filter((post) => [1, 4, 3].includes(post.id))
+              .sort((a, b) => [1, 4, 3].indexOf(a.id) - [1, 4, 3].indexOf(b.id))
               .map((post) => (
                 <PostCard key={post.id} post={post} />
               ))}
