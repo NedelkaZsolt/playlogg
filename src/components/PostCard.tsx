@@ -207,7 +207,7 @@ export function PostCard({ post }: PostCardProps) {
               <img
                 src={post.screenshot}
                 alt={`${post.title} screenshot`}
-                className="w-full h-40 object-cover"
+                className="w-full h-80 object-cover"
               />
             </div>
           )}
