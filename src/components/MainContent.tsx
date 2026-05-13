@@ -9,7 +9,7 @@ import type { GameTab } from '../types'
 import {
   BarChart2, Trophy, Target, Crosshair, Shield, Zap,
   Newspaper, Clock, ExternalLink, Edit3,
-  Plus, Star, TrendingUp, X, Square
+  Plus, Star, TrendingUp, X, Square, Flame
 } from 'lucide-react'
 
 interface MainContentProps {
@@ -45,6 +45,82 @@ const BANNERS = [
 ]
 
 const getRandomBanner = () => BANNERS[Math.floor(Math.random() * BANNERS.length)]
+
+/* ─────────────────────────────────────────────
+   AD BOX SIDEBAR
+───────────────────────────────────────────── */
+function AdBoxSidebar() {
+  const trendingTopics = [
+    { rank: 1, title: 'CS2 Major', icon: '🏆' },
+    { rank: 2, title: 'CS2 update', icon: '📰' },
+    { rank: 3, title: 'Steam ranks', icon: '⭐' },
+    { rank: 4, title: 'Esports', icon: '🎮' },
+    { rank: 5, title: 'Game update', icon: '🔧' },
+  ]
+
+  const activities = [
+    { name: 'David', game: 'Counter-Strike 2', initial: 'D', color: '#7755dd' },
+    { name: 'Adam', game: 'Counter-Strike 2', initial: 'A', color: '#f59e0b' },
+    { name: 'Peter', game: 'Dhayan Vampyr', initial: 'P', color: '#22c55e' },
+    { name: 'Joni1', game: 'Counter-Strike 2', initial: 'J', color: '#3b82f6' },
+    { name: 'Ferenc', game: 'Apex Legends', initial: 'F', color: '#f97316' },
+  ]
+
+  return (
+    <div className="space-y-4">
+      {/* Banner - reduced height */}
+      <div className="rounded-lg overflow-hidden" style={{ background: '#15151d', border: '1px solid #1e1e2c', height: '150px', boxShadow: '0 0 32px rgba(59,130,246,0.4)' }}>
+        <img src={getRandomBanner()} alt="Banner" className="w-full h-full object-cover" />
+      </div>
+
+      {/* Ad Box */}
+      <div className="rounded-2xl p-4" style={{ background: '#15151d', border: '1px solid #1e1e2c' }}>
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#52526a' }}>Ad</span>
+          <span className="text-[10px] font-semibold uppercase tracking-wider" style={{ color: '#3b82f6' }}>Featured</span>
+        </div>
+        
+        <p className="text-[15px] font-bold mb-2" style={{ color: '#e4e4ef' }}>PlayLogg Live</p>
+        <p className="text-[12px] mb-4" style={{ color: '#8a8aa0' }}>Real-time team and match analytics for CSG tournaments. Faster decisions, better strategies.</p>
+        
+        <div className="flex gap-2 mb-4">
+          <button className="flex-1 py-2 rounded-lg text-[12px] font-semibold" style={{ background: '#3b82f6', color: '#fff' }}>Details</button>
+          <button className="flex-1 py-2 rounded-lg text-[12px] font-semibold" style={{ background: '#1e1e2c', color: '#8a8aa0', border: '1px solid #27273a' }}>Learn more</button>
+        </div>
+
+        {/* Trending Topics */}
+        <div className="mb-4 pb-4" style={{ borderBottom: '1px solid #1e1e2c' }}>
+          <p className="text-[11px] font-semibold uppercase tracking-wider mb-3" style={{ color: '#52526a' }}>Trending Topics</p>
+          <div className="space-y-2">
+            {trendingTopics.map((topic) => (
+              <div key={topic.rank} className="flex items-center gap-2 text-[11px]" style={{ color: '#8a8aa0' }}>
+                <span style={{ color: '#52526a' }}>#{topic.rank}</span>
+                <span>{topic.icon}</span>
+                <span>{topic.title}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Activities */}
+        <p className="text-[11px] font-semibold uppercase tracking-wider mb-3" style={{ color: '#52526a' }}>Activities</p>
+        <div className="space-y-2">
+          {activities.map((activity) => (
+            <div key={activity.name} className="flex items-center gap-2">
+              <div className="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold text-white flex-shrink-0" style={{ background: activity.color }}>
+                {activity.initial}
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-[11px] font-medium" style={{ color: '#c8c8dc' }}>{activity.name}</p>
+                <p className="text-[10px]" style={{ color: '#52526a' }}>{activity.game}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
 
 const assignNewsThumbnails = (items: NewsItem[]) =>
   items.map((item, index) => ({
@@ -307,18 +383,13 @@ function HomeTab({ steamId: _steamId }: { steamId: string }) {
         <div className="grid gap-4" style={{ gridTemplateColumns: '1fr 1fr 300px' }}>
           <div className="col-span-2 space-y-4">
             {posts
-              .filter((post) => [1, 4, 3].includes(post.id))
-              .sort((a, b) => [1, 4, 3].indexOf(a.id) - [1, 4, 3].indexOf(b.id))
+              .filter((post) => [1, 4, 3, 9, 10, 11, 12].includes(post.id))
+              .sort((a, b) => [1, 4, 3, 9, 10, 11, 12].indexOf(a.id) - [1, 4, 3, 9, 10, 11, 12].indexOf(b.id))
               .map((post) => (
                 <PostCard key={post.id} post={post} />
               ))}
           </div>
-          <div className="space-y-4">
-            {/* Banner ablak */}
-            <div className="rounded-lg overflow-hidden" style={{ background: '#15151d', border: '1px solid #1e1e2c', minHeight: '400px', boxShadow: '0 0 32px rgba(59,130,246,0.4)' }}>
-              <img src={getRandomBanner()} alt="Banner" className="w-full h-full object-cover" />
-            </div>
-          </div>
+          <AdBoxSidebar />
         </div>
       </div>
     </>
@@ -397,25 +468,8 @@ function StatsTab() {
           </div>
         </div>
 
-        <div className="space-y-3">
-          {/* Banner */}
-          <div className="rounded-lg overflow-hidden" style={{ background: '#15151d', border: '1px solid #1e1e2c', minHeight: '200px', boxShadow: '0 0 32px rgba(59,130,246,0.4)' }}>
-            <img src={getRandomBanner()} alt="Banner" className="w-full h-full object-cover" />
-          </div>
-
-          {[
-            { label: 'ADR',           value: '82.4',  color: '#3b82f6' },
-            { label: 'KAST%',         value: '74%',   color: '#1ed760' },
-            { label: 'Utility damage',value: '38.1',  color: '#f59e0b' },
-            { label: 'Entry kill%',   value: '55%',   color: '#7755dd' },
-            { label: 'Clutch win%',   value: '43%',   color: '#3b82f6' },
-          ].map((s) => (
-            <div key={s.label} className="flex items-center justify-between px-4 py-2.5 rounded-lg"
-              style={{ background: '#15151d', border: '1px solid #1e1e2c' }}>
-              <span className="text-[12px]" style={{ color: '#52526a' }}>{s.label}</span>
-              <span className="text-[13px] font-bold tabular-nums" style={{ color: s.color }}>{s.value}</span>
-            </div>
-          ))}
+        <div>
+          <AdBoxSidebar />
         </div>
       </div>
     </div>
@@ -538,45 +592,8 @@ function NewsTab() {
           </a>
         ))}
       </div>
-      <div className="space-y-3">
-        {/* Banner */}
-        <div className="rounded-lg overflow-hidden" style={{ background: '#15151d', border: '1px solid #1e1e2c', minHeight: '200px', boxShadow: '0 0 32px rgba(59,130,246,0.4)' }}>
-          <img src={getRandomBanner()} alt="Banner" className="w-full h-full object-cover" />
-        </div>
-
-        <div className="rounded-3xl p-4" style={{ background: 'linear-gradient(135deg, #071426, #102e68)', border: '1px solid #1a2749' }}>
-          <div className="flex items-center justify-between gap-3">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.2em]" style={{ color: '#8a8aa0' }}>Ad</span>
-            <span className="text-[10px] uppercase font-semibold" style={{ color: '#7dd3fc' }}>Esports</span>
-          </div>
-          <p className="mt-4 text-[15px] font-bold leading-tight" style={{ color: '#f8fbff' }}>VlamAI Live Analytics</p>
-          <p className="mt-2 text-[12px] leading-snug" style={{ color: '#c7d2ff' }}>
-            Real-time team and match analytics for CS2 tournaments. Faster decisions, better strategies.
-          </p>
-          <div className="mt-4 flex items-center gap-2">
-            <button
-              className="rounded-full px-3 py-2 text-[12px] font-semibold transition-colors"
-              style={{ background: '#3b82f6', color: '#fff' }}
-              onMouseEnter={(e) => (e.currentTarget.style.background = '#2563eb')}
-              onMouseLeave={(e) => (e.currentTarget.style.background = '#3b82f6')}
-            >
-              Details
-            </button>
-            <span className="text-[11px]" style={{ color: '#8a8aa0' }}>Esports partner</span>
-          </div>
-        </div>
-        <div className="rounded-lg p-4" style={{ background: '#15151d', border: '1px solid #1e1e2c', boxShadow: '0 0 32px rgba(59,130,246,0.4)' }}>
-          <p className="text-[12px] font-semibold mb-3" style={{ color: '#52526a' }}>TRENDING TOPICS</p>
-          {['CS2 Major', 'CS2 update', 'Steam ranks', 'Esports', 'Game update'].map((t, i) => (
-            <div key={t} className="flex items-center gap-2 py-1.5 cursor-pointer"
-              onMouseEnter={e => (e.currentTarget.style.color = '#e4e4ef')}
-              onMouseLeave={e => (e.currentTarget.style.color = '')}>
-              <span className="text-[11px] font-bold tabular-nums w-4" style={{ color: '#3e3e56' }}>#{i + 1}</span>
-              <span className="text-[12px] font-medium" style={{ color: '#8a8aa0' }}>{t}</span>
-            </div>
-          ))}
-        </div>
-        <ActivityFeed />
+      <div>
+        <AdBoxSidebar />
       </div>
     </div>
   )
@@ -923,14 +940,8 @@ function ProfileTab() {
         </div>
 
         {/* Right sidebar */}
-        <div className="space-y-4">
-          {/* Banner */}
-          <div className="rounded-lg overflow-hidden" style={{ background: '#15151d', border: '1px solid #1e1e2c', minHeight: '400px', boxShadow: '0 0 32px rgba(59,130,246,0.4)' }}>
-            <img src={getRandomBanner()} alt="Banner" className="w-full h-full object-cover" />
-          </div>
-
-          {/* Activity Feed */}
-          <ActivityFeed />
+        <div>
+          <AdBoxSidebar />
         </div>
       </div>
     </div>
@@ -1201,6 +1212,49 @@ const BETA_GAMES = [
   },
 ]
 
+const NEWLY_RELEASED_GAMES = [
+  {
+    name: 'Burglin\' Gnomes',
+    description: 'An online Co-op game about breaking into houses and causing havoc as a tiny gnome.',
+    status: 'Coming Soon',
+    color: '#10b981',
+    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/3844970/header.jpg',
+    url: 'https://store.steampowered.com/app/3844970/Burglin_Gnomes/',
+  },
+  {
+    name: 'Lethal Company',
+    description: 'A co-op horror about scavenging at abandoned moons to sell scrap to the Company.',
+    status: 'Early Access',
+    color: '#e83c3c',
+    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/1966720/header.jpg',
+    url: 'https://store.steampowered.com/app/1966720/Lethal_Company/',
+  },
+  {
+    name: 'Valheim',
+    description: 'A brutal exploration and survival game for 1-10 players, set in a procedurally-generated purgatory inspired by viking culture.',
+    status: 'Early Access',
+    color: '#8b5cf6',
+    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/892970/header.jpg',
+    url: 'https://store.steampowered.com/app/892970/Valheim/',
+  },
+  {
+    name: 'Ori and the Blind Forest',
+    description: 'The forest of Nibel is dying. After a powerful storm sets a series of devastating events in motion, an unlikely hero must journey to find his courage and confront a dark nemesis to save his home.',
+    status: 'Released',
+    color: '#10b981',
+    image: 'https://cdn.cloudflare.steamstatic.com/steam/apps/261570/header.jpg',
+    url: 'https://store.steampowered.com/app/261570/Ori_and_the_Blind_Forest/',
+  },
+  {
+    name: 'Sekiro: Shadows Die Twice - GOTY Edition',
+    description: 'A challenging action-adventure game set in feudal Japan with intense swordplay and supernatural elements.',
+    status: 'Released',
+    color: '#e83c3c',
+    image: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/814380/header.jpg',
+    url: 'https://store.steampowered.com/app/814380/Sekiro_Shadows_Die_Twice__GOTY_Edition/',
+  },
+]
+
 function ExploreTab() {
   return (
     <div className="grid gap-4" style={{ gridTemplateColumns: '1fr 300px' }}>
@@ -1254,14 +1308,47 @@ function ExploreTab() {
               </a>
             ))}
           </div>
+
+          <div className="mt-8">
+            <p className="text-[17px] font-semibold" style={{ color: '#e4e4ef' }}>Newly Released Games</p>
+            <p className="text-[12px] mt-1" style={{ color: '#8a8aa0' }}>Check out the latest games that have recently hit the Steam store.</p>
+          </div>
+
+          <div className="mt-6 grid gap-4 md:grid-cols-2">
+            {NEWLY_RELEASED_GAMES.map((game) => (
+              <a
+                key={game.name}
+                href={game.url}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-3xl overflow-hidden block"
+                style={{ background: '#0f172a', border: '1px solid #1e1e2c' }}
+              >
+                <div className="relative h-40 overflow-hidden">
+                  <img src={game.image} alt={game.name} className="w-full h-full object-cover" />
+                  <span
+                    className="absolute left-3 top-3 rounded-full px-3 py-1 text-[10px] font-semibold uppercase"
+                    style={{ background: `${game.color}dd`, color: '#fff' }}
+                  >
+                    {game.status === 'Coming Soon' ? 'Soon' : 'Early Access'}
+                  </span>
+                </div>
+                <div className="p-4">
+                  <p className="text-[15px] font-semibold" style={{ color: '#e4e4ef' }}>{game.name}</p>
+                  <p className="text-[12px] mt-2" style={{ color: '#8a8aa0' }}>{game.description}</p>
+                  <div className="mt-4 flex items-center justify-between gap-2">
+                    <span className="text-[11px] font-semibold" style={{ color: game.color }}>{game.status}</span>
+                    <span className="text-[11px] text-[#8a8aa0]">Open store</span>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
         </div>
       </div>
 
-      <div className="space-y-4">
-        {/* Banner */}
-        <div className="rounded-lg overflow-hidden" style={{ background: '#15151d', border: '1px solid #1e1e2c', minHeight: '400px', boxShadow: '0 0 32px rgba(59,130,246,0.4)' }}>
-          <img src={getRandomBanner()} alt="Banner" className="w-full h-full object-cover" />
-        </div>
+      <div>
+        <AdBoxSidebar />
       </div>
     </div>
   )
@@ -1393,11 +1480,8 @@ function GamesTab({ steamId }: { steamId: string }) {
         )}
       </div>
 
-      <div className="space-y-4">
-        {/* Banner */}
-        <div className="rounded-lg overflow-hidden" style={{ background: '#15151d', border: '1px solid #1e1e2c', minHeight: '400px', boxShadow: '0 0 32px rgba(59,130,246,0.4)' }}>
-          <img src={getRandomBanner()} alt="Banner" className="w-full h-full object-cover" />
-        </div>
+      <div>
+        <AdBoxSidebar />
       </div>
     </div>
   )

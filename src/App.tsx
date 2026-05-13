@@ -4,6 +4,7 @@ import { Header } from './components/Header'
 import { Sidebar } from './components/Sidebar'
 import { MainContent } from './components/MainContent'
 import { LoginPage } from './components/LoginPage'
+import { EventNotificationBar } from './components/EventNotificationBar'
 import { useSteamAuth } from './hooks/useSteamAuth'
 
 export default function App() {
@@ -21,6 +22,7 @@ export default function App() {
         <Sidebar />
         <MainContent activeTab={activeTab} steamId={user.steamId} />
       </div>
+      <EventNotificationBar activeTab={activeTab} />
     </div>
   )
 }

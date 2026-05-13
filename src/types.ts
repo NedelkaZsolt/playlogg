@@ -35,4 +35,5 @@ export interface Post {
   twitchChannel?: string
   screenshot?: string
   feedback?: string
+  videoTutorial?: string
 }

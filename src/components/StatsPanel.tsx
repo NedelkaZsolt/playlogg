@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { TrendingUp, TrendingDown, Minus, ArrowRight, RefreshCw } from 'lucide-react'
 
-type Game = 'CS2' | 'Apex'
+type Game = 'CS2' | 'Apex' | 'SteamWorld Dig 2' | 'Ori'
 
 interface StatRow {
   label: string
@@ -32,8 +32,8 @@ interface ApexStats {
 
 const GAME_CONFIG: Record<Game, { appId: string; color: string; endpoint: string }> = {
   CS2:  { appId: '730',     color: '#3b82f6', endpoint: 'cs2'  },
-  Apex: { appId: '1172470', color: '#cc3333', endpoint: 'apex' },
-}
+  Apex: { appId: '1172470', color: '#cc3333', endpoint: 'apex' },  'SteamWorld Dig 2': { appId: '571310', color: '#8b5cf6', endpoint: 'steamworld' },
+  'Ori': { appId: '261570', color: '#10b981', endpoint: 'ori' },}
 
 const trendColor = { up: '#1ed760', down: '#e83c3c', neutral: '#52526a' }
 
@@ -51,6 +51,20 @@ const FALLBACK_STATS: Record<Game, StatRow[]> = {
     { label: 'Wins', value: '480', trend: 'neutral', bar: 96 },
     { label: 'Matches', value: '850', trend: 'neutral', bar: 100 },
     { label: 'Revives', value: '640', trend: 'neutral', bar: 100 },
+  ],
+  'SteamWorld Dig 2': [
+    { label: 'Treasures Found', value: '1,250', trend: 'up', bar: 85 },
+    { label: 'Levels Completed', value: '45', trend: 'up', bar: 90 },
+    { label: 'Enemies Defeated', value: '5,600', trend: 'up', bar: 100 },
+    { label: 'Upgrades Unlocked', value: '28', trend: 'neutral', bar: 70 },
+    { label: 'Playtime', value: '12h 30m', trend: 'neutral', bar: 60 },
+  ],
+  'Ori': [
+    { label: 'Spirit Light Collected', value: '8,500', trend: 'up', bar: 95 },
+    { label: 'Abilities Unlocked', value: '12', trend: 'up', bar: 80 },
+    { label: 'Enemies Defeated', value: '1,200', trend: 'up', bar: 100 },
+    { label: 'Secrets Found', value: '35', trend: 'neutral', bar: 70 },
+    { label: 'Playtime', value: '8h 15m', trend: 'neutral', bar: 50 },
   ],
 }
 
@@ -144,19 +158,26 @@ export function StatsPanel({ steamId }: { steamId: string }) {
       <div className="px-4 py-3 flex items-center justify-between" style={{ borderBottom: '1px solid #1e1e2c' }}>
         <span className="text-[13px] font-semibold" style={{ color: '#c8c8dc' }}>Statistics</span>
         <div className="flex items-center gap-1.5">
-          {(['CS2', 'Apex'] as Game[]).map((g) => (
+          {(['CS2', 'Apex', 'SteamWorld Dig 2', 'Ori'] as Game[]).map((g) => (
             <button
               key={g}
               onClick={() => setSelectedGame(g)}
-              className="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded transition-all"
+              className="w-6 h-6 rounded-full flex items-center justify-center text-[8px] font-bold transition-all"
               style={selectedGame === g
-                ? { background: `${GAME_CONFIG[g].color}18`, color: GAME_CONFIG[g].color, border: `1px solid ${GAME_CONFIG[g].color}30` }
-                : { background: 'transparent', color: '#3e3e56', border: '1px solid transparent' }
+                ? { background: GAME_CONFIG[g].color, color: 'white' }
+                : { background: '#1e1e2c', color: '#3e3e56', border: '1px solid #3e3e56' }
               }
             >
-              {g}
+              {g === 'CS2' ? 'CS' : g === 'Apex' ? 'AX' : g === 'SteamWorld Dig 2' ? 'SW' : 'OR'}
             </button>
           ))}
+          <button
+            className="w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-bold transition-all"
+            style={{ background: '#1e1e2c', color: '#3e3e56', border: '1px solid #3e3e56' }}
+            onClick={() => alert('Add more games feature coming soon!')}
+          >
+            +
+          </button>
         </div>
       </div>
 

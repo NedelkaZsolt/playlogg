@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Play, Pause, Volume2, VolumeX, Maximize2, ExternalLink } from 'lucide-react'
+import { Play, Pause, Volume2, VolumeX, Maximize2, ExternalLink, X } from 'lucide-react'
 import type { Post } from '../types'
 
 interface PostCardProps {
@@ -40,6 +40,7 @@ export function PostCard({ post }: PostCardProps) {
   const [isMuted, setIsMuted]     = useState(false)
   const [elapsed, setElapsed]     = useState(0)
   const [hovered, setHovered]     = useState(false)
+  const [showTutorialModal, setShowTutorialModal] = useState(false)
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const DURATION = 7200
 
@@ -132,22 +133,44 @@ export function PostCard({ post }: PostCardProps) {
             <>
               <Thumbnail color={post.gameColor} isPlaying={false} />
 
-              {/* Play button overlay */}
-              <div
-                className="absolute inset-0 flex items-center justify-center cursor-pointer"
-                onClick={togglePlay}
-                style={{ opacity: showControls || !isPlaying ? 1 : 0, transition: 'opacity 0.15s' }}
-              >
+              {/* Cover image for tutorial videos */}
+              {post.videoTutorial && post.screenshot ? (
                 <div
-                  className="w-12 h-12 rounded-full flex items-center justify-center"
+                  className="absolute inset-0 cursor-pointer hover:opacity-90 transition-opacity"
+                  onClick={() => setShowTutorialModal(true)}
                   style={{
-                    background: 'rgba(0,0,0,0.55)',
-                    border: '1.5px solid rgba(255,255,255,0.18)',
+                    backgroundImage: `url(${post.screenshot})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
                   }}
                 >
-                  <Play size={18} fill="white" className="text-white ml-0.5" />
+                  {/* Play overlay */}
+                  <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
+                    <div
+                      className="w-16 h-16 rounded-full flex items-center justify-center bg-black bg-opacity-60 border-2 border-white"
+                    >
+                      <Play size={24} fill="white" className="text-white ml-1" />
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                /* Play button overlay for regular videos */
+                <div
+                  className="absolute inset-0 flex items-center justify-center cursor-pointer"
+                  onClick={togglePlay}
+                  style={{ opacity: showControls || !isPlaying ? 1 : 0, transition: 'opacity 0.15s' }}
+                >
+                  <div
+                    className="w-12 h-12 rounded-full flex items-center justify-center"
+                    style={{
+                      background: 'rgba(0,0,0,0.55)',
+                      border: '1.5px solid rgba(255,255,255,0.18)',
+                    }}
+                  >
+                    <Play size={18} fill="white" className="text-white ml-0.5" />
+                  </div>
+                </div>
+              )}
 
               {/* Top badges */}
               <div className="absolute top-0 left-0 right-0 flex items-start justify-between p-3 pointer-events-none">
@@ -292,6 +315,45 @@ export function PostCard({ post }: PostCardProps) {
           </div>
         )}
       </div>
+
+      {/* Tutorial Video Modal */}
+      {showTutorialModal && post.videoTutorial && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-75"
+          onClick={() => setShowTutorialModal(false)}
+        >
+          <div
+            className="relative max-w-4xl w-full mx-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Close button */}
+            <button
+              onClick={() => setShowTutorialModal(false)}
+              className="absolute top-4 right-4 z-10 w-8 h-8 rounded-full bg-black bg-opacity-60 flex items-center justify-center text-white hover:bg-opacity-80 transition-colors"
+            >
+              <X size={16} />
+            </button>
+
+            {/* Video iframe */}
+            <div className="relative" style={{ paddingBottom: '56.25%' }}>
+              <iframe
+                src={post.videoTutorial}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="absolute inset-0 w-full h-full rounded-lg"
+                style={{ border: 'none' }}
+                title={`${post.game} Tutorial`}
+              />
+            </div>
+
+            {/* Title */}
+            <div className="mt-4 text-center">
+              <h3 className="text-lg font-semibold text-white">{post.title}</h3>
+              <p className="text-gray-300 text-sm mt-1">{post.game} - Game Tutorial</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
