@@ -242,8 +242,8 @@ export const posts: Post[] = [
     isLive: false,
     stat: 'Early Access',
     timestamp: '1 hour ago',
-    screenshot: 'https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/256696112/movie.184x123.jpg?t=1505990607',
-    videoTutorial: 'https://www.youtube.com/embed/2S8SHlO5rDo', // Valheim beginner tutorial
+    screenshot: '/valheim',
+    videoTutorial: 'https://www.youtube.com/embed/liQLtCLq3tc', // Valheim gameplay
   },
   {
     id: 12,
@@ -260,29 +260,29 @@ export const posts: Post[] = [
   },
   {
     id: 13,
-    game: 'Aether Drift',
+    game: 'Dirt Rally',
     gameColor: '#8b5cf6',
-    author: 'Nova',
-    title: 'Aether Drift — Hypercar Racing Tutorial',
-    description: 'Master the drift mechanics, boost timing, and track lines in this neon racing simulator.',
+    author: 'Codemasters',
+    title: 'Dirt Rally — Rally Racing',
+    description: 'Találj rá a legjobb rally játékban.',
     isLive: false,
-    stat: 'New Game',
+    stat: 'Rally Game',
     timestamp: '12 minutes ago',
-    screenshot: '/screen4.png',
-    videoTutorial: 'https://www.youtube.com/embed/4LZ0v3EkVLo', // Aether Drift tutorial
+    screenshot: '/dirt.jpg',
+    videoTutorial: 'https://www.youtube.com/embed/rtaWeNOeluU', // Dirt Rally gameplay
   },
   {
     id: 14,
-    game: 'Crimson Ops',
+    game: 'Hell Let Loose',
     gameColor: '#ef4444',
-    author: 'Velox',
-    title: 'Crimson Ops — Stealth Tactics Walkthrough',
-    description: 'Learn advanced stealth, cover, and takedown strategies in this tactical action shooter.',
+    author: 'Team17',
+    title: 'Hell Let Loose — WWII Multiplayer',
+    description: 'Experience intense large-scale WWII battles with realistic gameplay and squad tactics.',
     isLive: false,
-    stat: 'New Game',
+    stat: 'WWII FPS',
     timestamp: '20 minutes ago',
-    screenshot: '/screen5.png',
-    videoTutorial: 'https://www.youtube.com/embed/Q1Yq6ZxkqOc', // Crimson Ops gameplay tutorial
+    screenshot: '/hell.jpg',
+    videoTutorial: 'https://www.youtube.com/embed/S3hLu58KXg8', // Hell Let Loose gameplay
   },
   {
     id: 15,

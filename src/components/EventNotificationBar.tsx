@@ -85,7 +85,7 @@ export function EventNotificationBar({ activeTab }: EventNotificationBarProps) {
                 className="text-[13px] mt-1 transition-colors"
                 style={{ color: '#8a8aa0' }}
               >
-                Te se a részletekért <span style={{ color: '#3b82f6', cursor: 'pointer', fontWeight: '600' }} className="group-hover:text-blue-400">click ide</span>
+                Te se a részletekért <span onClick={() => window.open('https://esl.com/', '_blank')} style={{ color: '#3b82f6', cursor: 'pointer', fontWeight: '600' }} className="group-hover:text-blue-400">click ide</span>
               </p>
             </div>
           </div>
