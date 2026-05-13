@@ -299,7 +299,7 @@ function FriendRow({ friend, onMouseEnter, onMouseLeave, onClick }: {
         <p className="text-[13px] font-medium truncate leading-snug" style={{ color: '#c8c8dc' }}>
           {friend.name}
         </p>
-        <p className="text-[11px] truncate leading-snug" style={{ color: friend.statusColor === 'orange' ? '#3b82f6' : '#52526a' }}>
+        <p className="text-[11px] truncate leading-snug" style={{ color: friend.statusColor === 'orange' ? '#3b82f6' : '#8a8aa0' }}>
           {friend.status}
         </p>
       </div>
@@ -311,7 +311,7 @@ function FriendRow({ friend, onMouseEnter, onMouseLeave, onClick }: {
 function SectionLabel({ label, count }: { label: string; count: number }) {
   return (
     <div className="px-3 pt-4 pb-1 flex items-center justify-between">
-      <span className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: '#3e3e56' }}>
+      <span className="text-[10px] font-semibold uppercase tracking-widest" style={{ color: '#8aa1c1' }}>
         {label} — {count}
       </span>
     </div>
