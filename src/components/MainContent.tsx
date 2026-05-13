@@ -2,14 +2,13 @@ import { useState, useEffect } from 'react'
 import type { NavTab } from '../types'
 import { GameTabBar } from './GameTabBar'
 import { PostCard } from './PostCard'
-import { ActivityFeed } from './ActivityFeed'
 import { posts, gameTabs as initialGameTabs } from '../data/mockData'
 import { getCsgoNews } from '../lib/api'
 import type { GameTab } from '../types'
 import {
   BarChart2, Trophy, Target, Crosshair, Shield, Zap,
   Newspaper, Clock, ExternalLink, Edit3,
-  Plus, Star, TrendingUp, X, Square, Flame
+  Plus, Star, TrendingUp, X, Square
 } from 'lucide-react'
 
 interface MainContentProps {
@@ -383,8 +382,8 @@ function HomeTab({ steamId: _steamId }: { steamId: string }) {
         <div className="grid gap-4" style={{ gridTemplateColumns: '1fr 1fr 300px' }}>
           <div className="col-span-2 space-y-4">
             {posts
-              .filter((post) => [1, 4, 3, 9, 10, 11, 12].includes(post.id))
-              .sort((a, b) => [1, 4, 3, 9, 10, 11, 12].indexOf(a.id) - [1, 4, 3, 9, 10, 11, 12].indexOf(b.id))
+              .filter((post) => [1, 10, 15, 11, 16, 13, 14, 17].includes(post.id))
+              .sort((a, b) => [1, 10, 15, 11, 16, 13, 14, 17].indexOf(a.id) - [1, 10, 15, 11, 16, 13, 14, 17].indexOf(b.id))
               .map((post) => (
                 <PostCard key={post.id} post={post} />
               ))}
@@ -438,31 +437,95 @@ function MatchRow({ rank, map, result, kd, score }: {
 }
 
 function StatsTab() {
+  const gameOptions = [
+    { id: 'CSGO', label: 'CSGO', color: '#3b82f6' },
+    { id: 'Valorant', label: 'Valorant', color: '#ef4444' },
+    { id: 'Dota', label: 'Dota', color: '#7c3aed' },
+  ] as const
+
+  type GameOption = (typeof gameOptions)[number]['id']
+  const [selectedGame, setSelectedGame] = useState<GameOption>('CSGO')
+
+  const gameStats: Record<GameOption, Array<Parameters<typeof StatCard>[0]>> = {
+    CSGO: [
+      { label: 'K/D ratio', value: '1.45', sub: 'Top 12%', color: '#3b82f6', icon: Crosshair },
+      { label: 'Win rate', value: '56%', sub: '429 matches', color: '#1ed760', icon: Trophy },
+      { label: 'Headshot', value: '34%', sub: 'Strong aim', color: '#f59e0b', icon: Target },
+      { label: 'Rating', value: '1.21', sub: 'Gold Nova', color: '#7755dd', icon: BarChart2 },
+    ],
+    Valorant: [
+      { label: 'K/D ratio', value: '1.18', sub: 'Solo carry', color: '#ef4444', icon: Crosshair },
+      { label: 'Win rate', value: '51%', sub: '312 matches', color: '#1ed760', icon: Trophy },
+      { label: 'ACS', value: '238', sub: 'High impact', color: '#f59e0b', icon: Target },
+      { label: 'Rating', value: '1.10', sub: 'Diamond', color: '#7755dd', icon: BarChart2 },
+    ],
+    Dota: [
+      { label: 'K/D/A', value: '4.1 / 1.3 / 6.4', sub: 'Core performance', color: '#7c3aed', icon: Crosshair },
+      { label: 'GPM', value: '612', sub: 'Strong farming', color: '#1ed760', icon: Trophy },
+      { label: 'XPM', value: '678', sub: 'Fast level', color: '#f59e0b', icon: Target },
+      { label: 'Win rate', value: '54%', sub: '592 games', color: '#7755dd', icon: BarChart2 },
+    ],
+  }
+
+  const recentMatches: Record<GameOption, Array<{ rank: string; map: string; result: 'W' | 'L'; kd: string; score: string }>> = {
+    CSGO: [
+      { rank: '1', map: 'Dust2', result: 'W', kd: '22/15', score: '13–9' },
+      { rank: '2', map: 'Mirage', result: 'L', kd: '16/18', score: '12–14' },
+      { rank: '3', map: 'Inferno', result: 'W', kd: '24/17', score: '13–10' },
+      { rank: '4', map: 'Nuke', result: 'W', kd: '19/12', score: '13–7' },
+      { rank: '5', map: 'Overpass', result: 'W', kd: '21/14', score: '13–8' },
+    ],
+    Valorant: [
+      { rank: '1', map: 'Bind', result: 'W', kd: '24/17', score: '13–10' },
+      { rank: '2', map: 'Haven', result: 'W', kd: '19/12', score: '13–8' },
+      { rank: '3', map: 'Icebox', result: 'L', kd: '14/16', score: '11–13' },
+      { rank: '4', map: 'Ascent', result: 'W', kd: '21/14', score: '13–11' },
+      { rank: '5', map: 'Fracture', result: 'W', kd: '18/15', score: '13–9' },
+    ],
+    Dota: [
+      { rank: '1', map: 'Radiant Mid', result: 'W', kd: '13/2', score: '26–8' },
+      { rank: '2', map: 'Dire Safe', result: 'W', kd: '10/3', score: '18–4' },
+      { rank: '3', map: 'Offlane', result: 'L', kd: '5/7', score: '10–14' },
+      { rank: '4', map: 'Support', result: 'W', kd: '4/2', score: '22–12' },
+      { rank: '5', map: 'Carry', result: 'W', kd: '18/5', score: '35–10' },
+    ],
+  }
+
+  const statsLabel = selectedGame === 'CSGO' ? 'Counter-Strike: Global Offensive' : selectedGame === 'Valorant' ? 'Valorant' : 'Dota 2'
+
   return (
     <div className="space-y-6">
+      <div className="flex flex-wrap items-center gap-2">
+        {gameOptions.map((game) => (
+          <button
+            key={game.id}
+            onClick={() => setSelectedGame(game.id)}
+            className="px-3 py-2 rounded-full text-[12px] font-semibold transition-all"
+            style={selectedGame === game.id
+              ? { background: game.color, color: '#fff' }
+              : { background: '#1a1b26', color: '#8a8aa0', border: '1px solid #27273a' }}
+          >
+            {game.label}
+          </button>
+        ))}
+      </div>
+
       <div className="grid gap-4" style={{ gridTemplateColumns: '1fr 320px' }}>
         <div className="space-y-6">
           <div className="grid grid-cols-4 gap-3">
-            <StatCard label="K/D ratio"      value="1.84"  sub="Top 15%"      color="#3b82f6" icon={Crosshair} />
-            <StatCard label="Win rate"       value="62%"   sub="124 matches" color="#1ed760" icon={Trophy} />
-            <StatCard label="Headshot"        value="41%"   sub="Above average" color="#f59e0b" icon={Target} />
-            <StatCard label="Rating"          value="1.21"  sub="Premier"      color="#7755dd" icon={BarChart2} />
+            {gameStats[selectedGame].map((card) => (
+              <StatCard key={card.label} {...card} />
+            ))}
           </div>
 
           <div className="rounded-lg overflow-hidden" style={{ background: '#15151d', border: '1px solid #1e1e2c', boxShadow: '0 0 32px rgba(59,130,246,0.4)' }}>
             <div className="px-4 py-3 flex items-center justify-between" style={{ borderBottom: '1px solid #1e1e2c' }}>
               <span className="text-[13px] font-semibold" style={{ color: '#c8c8dc' }}>Recent matches</span>
-              <span className="text-[11px]" style={{ color: '#52526a' }}>CS2 · Premier</span>
+              <span className="text-[11px]" style={{ color: '#52526a' }}>{statsLabel}</span>
             </div>
             <div className="py-1">
-              {[
-                { rank: '1', map: 'Dust2',   result: 'W' as const, kd: '24/14', score: '13–8' },
-                { rank: '2', map: 'Mirage',  result: 'W' as const, kd: '19/11', score: '13–6' },
-                { rank: '3', map: 'Inferno', result: 'L' as const, kd: '16/21', score: '9–13' },
-                { rank: '4', map: 'Nuke',    result: 'W' as const, kd: '22/15', score: '13–10' },
-                { rank: '5', map: 'Ancient', result: 'W' as const, kd: '18/12', score: '13–7' },
-              ].map((m) => (
-                <MatchRow key={m.rank} {...m} />
+              {recentMatches[selectedGame].map((m) => (
+                <MatchRow key={`${selectedGame}-${m.rank}`} {...m} />
               ))}
             </div>
           </div>

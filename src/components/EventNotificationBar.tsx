@@ -64,7 +64,7 @@ export function EventNotificationBar({ activeTab }: EventNotificationBarProps) {
           {/* Icon and Text container */}
           <div className="flex items-center gap-4 flex-1">
             {/* Image */}
-            <div className="flex-shrink-0 w-12 h-12 rounded-lg overflow-hidden flex items-center justify-center" style={{ background: '#dc263518' }}>
+            <div className="flex-shrink-0 w-20 aspect-video rounded-2xl overflow-hidden flex items-center justify-center" style={{ background: '#dc263518' }}>
               <img src="/esl.gif" alt="ESL Event" className="w-full h-full object-cover" />
             </div>
 

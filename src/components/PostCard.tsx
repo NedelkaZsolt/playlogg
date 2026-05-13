@@ -99,121 +99,121 @@ export function PostCard({ post }: PostCardProps) {
         ;(e.currentTarget as HTMLDivElement).style.borderColor = '#1e1e2c'
       }}
     >
-      {/* Video / Thumbnail area */}
-      <div
-        className="relative overflow-hidden"
-        style={{ paddingBottom: hasStream && isPlaying ? '56.25%' : '52%' }}
-        onClick={!hasStream ? togglePlay : undefined}
-      >
-        <div className="absolute inset-0">
+      {(hasStream || post.videoTutorial) && (
+        <div
+          className="relative overflow-hidden"
+          style={{ paddingBottom: hasStream && isPlaying ? '56.25%' : '52%' }}
+          onClick={!hasStream && post.videoTutorial ? togglePlay : undefined}
+        >
+          <div className="absolute inset-0">
 
-          {/* ── Live embed: Kick or Twitch (when playing) ── */}
-          {hasStream && isPlaying ? (
-            <>
-              {post.kickChannel && (
-                <iframe
-                  src={kickEmbedSrc!}
-                  allow="autoplay; fullscreen"
-                  allowFullScreen
-                  className="absolute inset-0 w-full h-full"
-                  style={{ border: 'none' }}
-                />
-              )}
-              {post.twitchChannel && (
-                <iframe
-                  src={twitchEmbedSrc!}
-                  allowFullScreen
-                  className="absolute inset-0 w-full h-full"
-                  style={{ border: 'none' }}
-                />
-              )}
-            </>
-          ) : (
-            /* ── CSS thumbnail (paused / no Kick) ── */
-            <>
-              <Thumbnail color={post.gameColor} isPlaying={false} />
+            {/* ── Live embed: Kick or Twitch (when playing) ── */}
+            {hasStream && isPlaying ? (
+              <>
+                {post.kickChannel && (
+                  <iframe
+                    src={kickEmbedSrc!}
+                    allow="autoplay; fullscreen"
+                    allowFullScreen
+                    className="absolute inset-0 w-full h-full"
+                    style={{ border: 'none' }}
+                  />
+                )}
+                {post.twitchChannel && (
+                  <iframe
+                    src={twitchEmbedSrc!}
+                    allowFullScreen
+                    className="absolute inset-0 w-full h-full"
+                    style={{ border: 'none' }}
+                  />
+                )}
+              </>
+            ) : (
+              /* ── CSS thumbnail (paused / no Kick) ── */
+              <>
+                <Thumbnail color={post.gameColor} isPlaying={false} />
 
-              {/* Cover image for tutorial videos */}
-              {post.videoTutorial && post.screenshot ? (
-                <div
-                  className="absolute inset-0 cursor-pointer hover:opacity-90 transition-opacity"
-                  onClick={() => setShowTutorialModal(true)}
-                  style={{
-                    backgroundImage: `url(${post.screenshot})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                  }}
-                >
-                  {/* Play overlay */}
-                  <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
-                    <div
-                      className="w-16 h-16 rounded-full flex items-center justify-center bg-black bg-opacity-60 border-2 border-white"
-                    >
-                      <Play size={24} fill="white" className="text-white ml-1" />
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                /* Play button overlay for regular videos */
-                <div
-                  className="absolute inset-0 flex items-center justify-center cursor-pointer"
-                  onClick={togglePlay}
-                  style={{ opacity: showControls || !isPlaying ? 1 : 0, transition: 'opacity 0.15s' }}
-                >
+                {/* Cover image for tutorial videos */}
+                {post.videoTutorial && post.screenshot ? (
                   <div
-                    className="w-12 h-12 rounded-full flex items-center justify-center"
+                    className="absolute inset-0 cursor-pointer hover:opacity-90 transition-opacity"
+                    onClick={() => setShowTutorialModal(true)}
                     style={{
-                      background: 'rgba(0,0,0,0.55)',
-                      border: '1.5px solid rgba(255,255,255,0.18)',
+                      backgroundImage: `url(${post.screenshot})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
                     }}
                   >
-                    <Play size={18} fill="white" className="text-white ml-0.5" />
+                    {/* Play overlay */}
+                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-30">
+                      <div
+                        className="w-16 h-16 rounded-full flex items-center justify-center bg-black bg-opacity-60 border-2 border-white"
+                      >
+                        <Play size={24} fill="white" className="text-white ml-1" />
+                      </div>
+                    </div>
                   </div>
-                </div>
-              )}
-
-              {/* Top badges */}
-              <div className="absolute top-0 left-0 right-0 flex items-start justify-between p-3 pointer-events-none">
-                {post.isLive ? (
-                  <div className="flex items-center gap-1.5 px-2 py-0.5 rounded"
-                    style={{ background: '#e83c3c', color: '#fff' }}>
-                    <span className="w-1.5 h-1.5 rounded-full bg-white" />
-                    <span className="text-[10px] font-bold uppercase tracking-wider">Live</span>
-                  </div>
-                ) : <div />}
-                <div
-                  className="px-2 py-0.5 rounded text-[10px] font-semibold"
-                  style={{ background: 'rgba(0,0,0,0.6)', color: '#c8c8dc' }}
-                >
-                  {post.game}
-                </div>
-              </div>
-
-              {/* Stat badge */}
-              {post.stat && (
-                <div className="absolute bottom-3 right-3 pointer-events-none">
-                  <span
-                    className="text-[11px] font-bold px-2 py-0.5 rounded"
-                    style={{ background: 'rgba(0,0,0,0.65)', color: post.gameColor }}
-                  >
-                    {post.stat}
-                  </span>
-                </div>
-              )}
-
-              {/* Progress bar (simulated) */}
-              {!hasStream && isPlaying && (
-                <div className="absolute bottom-0 left-0 right-0 h-0.5" style={{ background: 'rgba(255,255,255,0.1)' }}>
+                ) : hasStream || post.videoTutorial ? (
                   <div
-                    className="h-full"
-                    style={{ width: `${progressPct}%`, background: post.gameColor, transition: 'width 1s linear' }}
-                  />
+                    className="absolute inset-0 flex items-center justify-center cursor-pointer"
+                    onClick={togglePlay}
+                    style={{ opacity: showControls || !isPlaying ? 1 : 0, transition: 'opacity 0.15s' }}
+                  >
+                    <div
+                      className="w-12 h-12 rounded-full flex items-center justify-center"
+                      style={{
+                        background: 'rgba(0,0,0,0.55)',
+                        border: '1.5px solid rgba(255,255,255,0.18)',
+                      }}
+                    >
+                      <Play size={18} fill="white" className="text-white ml-0.5" />
+                    </div>
+                  </div>
+                ) : null}
+
+                {/* Top badges */}
+                <div className="absolute top-0 left-0 right-0 flex items-start justify-between p-3 pointer-events-none">
+                  {post.isLive ? (
+                    <div className="flex items-center gap-1.5 px-2 py-0.5 rounded"
+                      style={{ background: '#e83c3c', color: '#fff' }}>
+                      <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                      <span className="text-[10px] font-bold uppercase tracking-wider">Live</span>
+                    </div>
+                  ) : <div />}
+                  <div
+                    className="px-2 py-0.5 rounded text-[10px] font-semibold"
+                    style={{ background: 'rgba(0,0,0,0.6)', color: '#c8c8dc' }}
+                  >
+                    {post.game}
+                  </div>
                 </div>
-              )}
-            </>
-          )}
+
+                {/* Stat badge */}
+                {post.stat && (
+                  <div className="absolute bottom-3 right-3 pointer-events-none">
+                    <span
+                      className="text-[11px] font-bold px-2 py-0.5 rounded"
+                      style={{ background: 'rgba(0,0,0,0.65)', color: post.gameColor }}
+                    >
+                      {post.stat}
+                    </span>
+                  </div>
+                )}
+
+                {/* Progress bar (simulated) */}
+                {!hasStream && isPlaying && (
+                  <div className="absolute bottom-0 left-0 right-0 h-0.5" style={{ background: 'rgba(255,255,255,0.1)' }}>
+                    <div
+                      className="h-full"
+                      style={{ width: `${progressPct}%`, background: post.gameColor, transition: 'width 1s linear' }}
+                    />
+                  </div>
+                )}
+              </>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Info row */}
       <div className="flex items-start justify-between gap-3 px-4 py-3">
@@ -224,7 +224,7 @@ export function PostCard({ post }: PostCardProps) {
           <p className="text-[12px] mt-0.5 leading-snug" style={{ color: '#52526a' }}>
             {post.description}
           </p>
-          {post.screenshot && (
+          {post.screenshot && !post.videoTutorial && (
             <div className="mt-3 rounded-xl overflow-hidden border border-[#1e1e2c]">
               <img
                 src={post.screenshot}

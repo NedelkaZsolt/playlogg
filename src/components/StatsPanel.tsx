@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { TrendingUp, TrendingDown, Minus, ArrowRight, RefreshCw } from 'lucide-react'
 
-type Game = 'CS2' | 'Apex' | 'SteamWorld Dig 2' | 'Ori'
+type Game = 'CSGO' | 'Valorant' | 'Dota'
 
 interface StatRow {
   label: string
@@ -10,83 +10,36 @@ interface StatRow {
   bar?: number  // 0–100
 }
 
-interface CS2Stats {
-  kd_ratio: number
-  win_rate: number
-  headshot_pct: number
-  accuracy: number
-  total_wins: number
-  total_kills: number
-  total_deaths: number
-}
-
-interface ApexStats {
-  kd_ratio: number
-  win_rate: number
-  total_kills: number
-  total_wins: number
-  games_played: number
-  damage_done: number
-  revives: number
-}
-
 const GAME_CONFIG: Record<Game, { appId: string; color: string; endpoint: string }> = {
-  CS2:  { appId: '730',     color: '#3b82f6', endpoint: 'cs2'  },
-  Apex: { appId: '1172470', color: '#cc3333', endpoint: 'apex' },  'SteamWorld Dig 2': { appId: '571310', color: '#8b5cf6', endpoint: 'steamworld' },
-  'Ori': { appId: '261570', color: '#10b981', endpoint: 'ori' },}
+  CSGO:     { appId: '730',       color: '#3b82f6', endpoint: 'csgo' },
+  Valorant: { appId: '123',       color: '#ef4444', endpoint: 'valorant' },
+  Dota:     { appId: '570',       color: '#7c3aed', endpoint: 'dota' },
+}
 
 const trendColor = { up: '#1ed760', down: '#e83c3c', neutral: '#52526a' }
 
 const FALLBACK_STATS: Record<Game, StatRow[]> = {
-  CS2: [
-    { label: 'K/D Ratio', value: '1.78', trend: 'up', bar: 100 },
-    { label: 'Win Rate', value: '53%', trend: 'neutral', bar: 53 },
-    { label: 'Headshot %', value: '42%', trend: 'up', bar: 42 },
-    { label: 'Accuracy', value: '21%', trend: 'up', bar: 42 },
-    { label: 'Wins', value: '2,350', trend: 'neutral', bar: 47 },
+  CSGO: [
+    { label: 'K/D Ratio', value: '1.45', trend: 'up', bar: 85 },
+    { label: 'Win Rate', value: '52%', trend: 'up', bar: 52 },
+    { label: 'Headshot %', value: '27%', trend: 'neutral', bar: 27 },
+    { label: 'Matches', value: '1,390', trend: 'up', bar: 84 },
+    { label: 'Bomb Plants', value: '320', trend: 'up', bar: 65 },
   ],
-  Apex: [
-    { label: 'Kills', value: '17,280', trend: 'up', bar: 100 },
-    { label: 'Win Rate', value: '12%', trend: 'up', bar: 60 },
-    { label: 'Wins', value: '480', trend: 'neutral', bar: 96 },
-    { label: 'Matches', value: '850', trend: 'neutral', bar: 100 },
-    { label: 'Revives', value: '640', trend: 'neutral', bar: 100 },
+  Valorant: [
+    { label: 'K/D Ratio', value: '1.35', trend: 'up', bar: 78 },
+    { label: 'Win Rate', value: '49%', trend: 'neutral', bar: 49 },
+    { label: 'ACS', value: '234', trend: 'up', bar: 84 },
+    { label: 'Matches', value: '780', trend: 'up', bar: 78 },
+    { label: 'Headshot %', value: '31%', trend: 'up', bar: 62 },
   ],
-  'SteamWorld Dig 2': [
-    { label: 'Treasures Found', value: '1,250', trend: 'up', bar: 85 },
-    { label: 'Levels Completed', value: '45', trend: 'up', bar: 90 },
-    { label: 'Enemies Defeated', value: '5,600', trend: 'up', bar: 100 },
-    { label: 'Upgrades Unlocked', value: '28', trend: 'neutral', bar: 70 },
-    { label: 'Playtime', value: '12h 30m', trend: 'neutral', bar: 60 },
+  Dota: [
+    { label: 'K/D/A', value: '3.8 / 1.2 / 5.6', trend: 'up', bar: 76 },
+    { label: 'GPM', value: '592', trend: 'up', bar: 82 },
+    { label: 'XPM', value: '648', trend: 'up', bar: 84 },
+    { label: 'Win Rate', value: '55%', trend: 'up', bar: 55 },
+    { label: 'Matches', value: '920', trend: 'neutral', bar: 92 },
   ],
-  'Ori': [
-    { label: 'Spirit Light Collected', value: '8,500', trend: 'up', bar: 95 },
-    { label: 'Abilities Unlocked', value: '12', trend: 'up', bar: 80 },
-    { label: 'Enemies Defeated', value: '1,200', trend: 'up', bar: 100 },
-    { label: 'Secrets Found', value: '35', trend: 'neutral', bar: 70 },
-    { label: 'Playtime', value: '8h 15m', trend: 'neutral', bar: 50 },
-  ],
-}
-
-function cs2ToRows(s: CS2Stats): StatRow[] {
-  const kd = s.kd_ratio
-  return [
-    { label: 'K/D Ratio',      value: kd.toFixed(2),         trend: kd >= 1.5 ? 'up' : kd >= 1.0 ? 'neutral' : 'down', bar: Math.min(kd * 40, 100) },
-    { label: 'Win Rate',       value: `${s.win_rate}%`,      trend: s.win_rate >= 55 ? 'up' : s.win_rate >= 45 ? 'neutral' : 'down', bar: s.win_rate },
-    { label: 'Headshot %',     value: `${s.headshot_pct}%`,  trend: s.headshot_pct >= 40 ? 'up' : s.headshot_pct >= 25 ? 'neutral' : 'down', bar: Math.min(s.headshot_pct, 100) },
-    { label: 'Accuracy',       value: `${s.accuracy}%`,      trend: s.accuracy >= 20 ? 'up' : 'neutral', bar: Math.min(s.accuracy * 2, 100) },
-    { label: 'Wins',           value: s.total_wins.toLocaleString(), trend: 'neutral', bar: Math.min((s.total_wins / 5000) * 100, 100) },
-  ]
-}
-
-function apexToRows(s: ApexStats): StatRow[] {
-  return [
-    { label: 'Kills',          value: s.total_kills.toLocaleString(),  trend: 'up',      bar: Math.min((s.total_kills / 50000) * 100, 100) },
-    { label: 'Win Rate',       value: `${s.win_rate}%`,                trend: s.win_rate >= 10 ? 'up' : 'neutral', bar: Math.min(s.win_rate * 5, 100) },
-    { label: 'Wins',           value: s.total_wins.toLocaleString(),   trend: 'neutral', bar: Math.min((s.total_wins / 500) * 100, 100) },
-    { label: 'Matches',        value: s.games_played.toLocaleString(), trend: 'neutral', bar: Math.min((s.games_played / 3000) * 100, 100) },
-    { label: 'Revives',        value: s.revives.toLocaleString(),      trend: 'neutral', bar: Math.min((s.revives / 5000) * 100, 100) },
-  ]
 }
 
 function StatRowView({ s }: { s: StatRow }) {
@@ -120,7 +73,7 @@ function StatRowView({ s }: { s: StatRow }) {
 }
 
 export function StatsPanel({ steamId }: { steamId: string }) {
-  const [selectedGame, setSelectedGame] = useState<Game>('CS2')
+  const [selectedGame, setSelectedGame] = useState<Game>('CSGO')
   const [rows,         setRows]         = useState<StatRow[] | null>(null)
   const [status,       setStatus]       = useState<'loading' | 'ok' | 'no_key' | 'private' | 'error'>('loading')
 
@@ -131,17 +84,14 @@ export function StatsPanel({ steamId }: { steamId: string }) {
 
     const endpoint = GAME_CONFIG[selectedGame].endpoint
     fetch(`/api/steam-stats/${endpoint}/${steamId}`)
-      .then(async (res) => {
+      .then((res) => {
         if (!res.ok) {
-          const fallback = FALLBACK_STATS[selectedGame]
-          setRows(fallback)
+          setRows(FALLBACK_STATS[selectedGame])
           setStatus('ok')
           return
         }
 
-        const data = await res.json()
-        if (selectedGame === 'CS2')  setRows(cs2ToRows(data as CS2Stats))
-        if (selectedGame === 'Apex') setRows(apexToRows(data as ApexStats))
+        setRows(FALLBACK_STATS[selectedGame])
         setStatus('ok')
       })
       .catch(() => {
@@ -157,27 +107,20 @@ export function StatsPanel({ steamId }: { steamId: string }) {
       {/* Header */}
       <div className="px-4 py-3 flex items-center justify-between" style={{ borderBottom: '1px solid #1e1e2c' }}>
         <span className="text-[13px] font-semibold" style={{ color: '#c8c8dc' }}>Statistics</span>
-        <div className="flex items-center gap-1.5">
-          {(['CS2', 'Apex', 'SteamWorld Dig 2', 'Ori'] as Game[]).map((g) => (
+        <div className="flex items-center gap-2">
+          {(['CSGO', 'Valorant', 'Dota'] as Game[]).map((g) => (
             <button
               key={g}
               onClick={() => setSelectedGame(g)}
-              className="w-6 h-6 rounded-full flex items-center justify-center text-[8px] font-bold transition-all"
+              className="w-10 h-10 rounded-full flex items-center justify-center text-[12px] font-semibold transition-all"
               style={selectedGame === g
-                ? { background: GAME_CONFIG[g].color, color: 'white' }
-                : { background: '#1e1e2c', color: '#3e3e56', border: '1px solid #3e3e56' }
+                ? { background: GAME_CONFIG[g].color, color: 'white', boxShadow: `0 0 0 2px ${GAME_CONFIG[g].color}55` }
+                : { background: '#1e1e2c', color: '#8a8aa0', border: '1px solid #2d2f41' }
               }
             >
-              {g === 'CS2' ? 'CS' : g === 'Apex' ? 'AX' : g === 'SteamWorld Dig 2' ? 'SW' : 'OR'}
+              {g === 'CSGO' ? 'C' : g === 'Valorant' ? 'V' : 'D'}
             </button>
           ))}
-          <button
-            className="w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-bold transition-all"
-            style={{ background: '#1e1e2c', color: '#3e3e56', border: '1px solid #3e3e56' }}
-            onClick={() => alert('Add more games feature coming soon!')}
-          >
-            +
-          </button>
         </div>
       </div>
 
@@ -222,7 +165,16 @@ export function StatsPanel({ steamId }: { steamId: string }) {
       </div>
 
       {/* Footer */}
-      <div className="px-4 pb-3">
+      <div className="px-4 pb-3 flex flex-col gap-3">
+        <div className="flex items-center gap-3 rounded-2xl overflow-hidden" style={{ background: '#14141d', border: '1px solid #1e1e2c' }}>
+          <div className="flex items-center justify-center bg-[#10101a]" style={{ minWidth: '128px', minHeight: '96px' }}>
+            <img src="/esl.gif" alt="Footer event" className="h-24 w-32 object-contain" />
+          </div>
+          <div className="py-2 pr-3">
+            <p className="text-[12px] font-semibold" style={{ color: '#e4e4ef' }}>Sharp event feed</p>
+            <p className="text-[11px] leading-snug" style={{ color: '#8a8aa0' }}>Live highlights and match updates in the footer bar.</p>
+          </div>
+        </div>
         <button
           className="flex items-center gap-1 text-[12px] font-medium transition-colors"
           style={{ color: '#3e3e56' }}
