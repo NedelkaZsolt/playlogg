@@ -99,13 +99,18 @@ function CallPopup({
     <div className="fixed bottom-4 right-4 z-50" style={{ width: '320px', maxHeight: '420px' }}>
       <div className="rounded-lg overflow-hidden shadow-2xl" style={{ background: '#15151d', border: '1px solid #27273a' }}>
         <div className="flex items-center justify-between px-4 py-3" style={{ borderBottom: '1px solid #1e1e2c' }}>
-          <div>
-            <p className="text-[13px] font-semibold" style={{ color: '#e4e4ef' }}>Call</p>
-            <p className="text-[11px]" style={{ color: '#52526a' }}>{participants.length} participant{participants.length === 1 ? '' : 's'}</p>
-          </div>
-          <button onClick={onClose} className="text-[#52526a] hover:text-[#e4e4ef]">
-            <X size={14} />
+          <button
+            className="px-3 py-1 rounded-md text-[12px] font-semibold"
+            style={{ background: '#3b82f6', color: '#fff' }}
+          >
+            Call
           </button>
+          <div className="flex items-center gap-2">
+            <p className="text-[11px]" style={{ color: '#52526a' }}>{participants.length} participant{participants.length === 1 ? '' : 's'}</p>
+            <button onClick={onClose} className="text-[#52526a] hover:text-[#e4e4ef]">
+              <X size={14} />
+            </button>
+          </div>
         </div>
 
         <div className="px-4 py-3 max-h-64 overflow-y-auto space-y-3">
