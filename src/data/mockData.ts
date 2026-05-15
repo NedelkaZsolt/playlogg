@@ -242,7 +242,7 @@ export const posts: Post[] = [
     isLive: false,
     stat: 'Early Access',
     timestamp: '1 hour ago',
-    screenshot: '/valheim',
+    screenshot: '/valheim.jpg',
     videoTutorial: 'https://www.youtube.com/embed/liQLtCLq3tc', // Valheim gameplay
   },
   {
