@@ -53,48 +53,45 @@ export function Header({ activeTab, onTabChange, user, onLogout }: HeaderProps) 
 
   return (
     <header
-      className="flex items-center justify-between px-6 flex-shrink-0 z-20 gap-8 relative"
+      className="flex items-center justify-between flex-shrink-0 z-20 relative"
       style={{ height: '52px', background: '#111119', borderBottom: '1px solid #1e1e2c' }}
     >
-          {/* Logo */}
-      <div className="flex items-center gap-2 select-none flex-shrink-0" style={{ minWidth: 140 }}>
-        <img src="/logo.png" alt="PlayLogg Logo" width="150" height="48" style={{ objectFit: 'contain' }} />
+      <div className="flex items-center justify-center" style={{ width: 248, minWidth: 248, paddingLeft: '16px', paddingRight: '16px' }}>
+        <img src="/logo.png" alt="PlayLogg Logo" width="150" height="55" style={{ objectFit: 'contain' }} />
       </div>
 
-      {/* Nav */}
-      <nav className="flex items-center gap-1 flex-1 justify-center">
-        {NAV_TABS.map((tab) => {
-          const isActive = activeTab === tab
-          return (
-            <button
-              key={tab}
-              onClick={() => onTabChange(tab)}
-              className="relative px-4 py-1.5 rounded-md text-[13px] font-medium transition-all duration-100"
-              style={{
-                color: isActive ? '#e4e4ef' : '#52526a',
-                background: isActive ? '#1a1a26' : 'transparent',
-              }}
-              onMouseEnter={(e) => {
-                if (!isActive) (e.currentTarget as HTMLButtonElement).style.color = '#8a8aa0'
-              }}
-              onMouseLeave={(e) => {
-                if (!isActive) (e.currentTarget as HTMLButtonElement).style.color = '#52526a'
-              }}
-            >
-              {tab}
-              {isActive && (
-                <span
-                  className="absolute bottom-0 left-4 right-4 rounded-t-full"
-                  style={{ height: '2px', background: ACCENT_COLOR }}
-                />
-              )}
-            </button>
-          )
-        })}
-      </nav>
+      <nav className="flex items-center gap-1 flex-1 justify-center" style={{ marginLeft: '-150px' }}>
+          {NAV_TABS.map((tab) => {
+            const isActive = activeTab === tab
+            return (
+              <button
+                key={tab}
+                onClick={() => onTabChange(tab)}
+                className="relative px-4 py-1.5 rounded-md text-[13px] font-medium transition-all duration-100"
+                style={{
+                  color: isActive ? '#e4e4ef' : '#52526a',
+                  background: isActive ? '#1a1a26' : 'transparent',
+                }}
+                onMouseEnter={(e) => {
+                  if (!isActive) (e.currentTarget as HTMLButtonElement).style.color = '#8a8aa0'
+                }}
+                onMouseLeave={(e) => {
+                  if (!isActive) (e.currentTarget as HTMLButtonElement).style.color = '#52526a'
+                }}
+              >
+                {tab}
+                {isActive && (
+                  <span
+                    className="absolute bottom-0 left-4 right-4 rounded-t-full"
+                    style={{ height: '2px', background: ACCENT_COLOR }}
+                  />
+                )}
+              </button>
+            )
+          })}
+        </nav>
 
-      {/* Actions + dropdowns wrapper */}
-      <div ref={panelRef} className="flex items-center gap-3 flex-shrink-0 relative" style={{ minWidth: 140, justifyContent: 'flex-end' }}>
+        <div ref={panelRef} className="flex items-center gap-3 flex-shrink-0 relative" style={{ minWidth: 140, justifyContent: 'flex-end' }}>
 
         {/* Search button */}
         <button
